@@ -5,6 +5,7 @@
 #define CHANNEL_4 4
 
 // methods
+extern void initSound(void);
 extern void playSound(int, int[5]);
 
 // sounds

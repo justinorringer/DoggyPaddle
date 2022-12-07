@@ -31,9 +31,7 @@ void init() {
 	DISPLAY_ON;
 
 	// sound
-	NR52_REG = 0x80; // turns on sound, 1000 0000 binary
-	NR50_REG = 0x77; // sets volume for both left and right channel, sets to max
-	NR51_REG = 0xFF; // sets which channels we want to use, all of them. 1111 1111 in binary, 4 sound channels and each have 2 outputs (left and right channel)
+	initSound();
 
 	set_bkg_data(0, 11, poolTiles);	
 	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap); 
