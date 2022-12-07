@@ -5,6 +5,7 @@
 #include "tiles/german.h"
 #include "tiles/ocean.h"
 #include "maps/pool_map.h"
+#include "sounds/sounds.h"
 
 void init();
 void checkInput();
@@ -26,17 +27,21 @@ void main() {
 }
 
 void init() {
-	
-	DISPLAY_ON;						// Turn on the display
-	set_bkg_data(0, 11, poolTiles);	// Load 23 tiles into background memory
-	
+	// display
+	DISPLAY_ON;
+
+	// sound
+	NR52_REG = 0x80; // turns on sound, 1000 0000 binary
+	NR50_REG = 0x77; // sets volume for both left and right channel, sets to max
+	NR51_REG = 0xFF; // sets which channels we want to use, all of them. 1111 1111 in binary, 4 sound channels and each have 2 outputs (left and right channel)
+
+	set_bkg_data(0, 11, poolTiles);	
 	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap); 
 
     set_sprite_data(0, 1, oceanTiles);
-
     set_sprite_tile(0, 0);
 
-    player[0] = 32;
+    player[0] = 8;
 	player[1] = 16;
 
     move_sprite(0, player[0], player[1]);
@@ -53,6 +58,10 @@ void updateSwitches() {
 void checkInput() {
     int tempX = player[0];
     int tempY = player[1];
+
+	if (joypad() & J_A) {
+		
+    }
 
 	if (joypad() & J_B) {
 		
@@ -86,9 +95,22 @@ void checkInput() {
 		
 	}
 
-    // Is the player colliding with the left wall?
-	if(collisionCheck(tempX, tempY, 8, 8, 0, 32, 32, 144) == true) {
-		// no op
+	UINT8 tileSize = 8; // px
+
+	if(
+		// left wall (pool boundary)
+		collisionCheck(tempX, tempY, tileSize, tileSize, 0, 32, 32, 144)
+		// left wall 2 (left of screen, not pool boundary)
+		|| collisionCheck(tempX, tempY, tileSize, tileSize, 8, 16, 0, 32)
+		// right wall
+		|| collisionCheck(tempX, tempY, tileSize, tileSize, 160+tileSize, 0, 0, 144+8+tileSize)
+		// ceiling
+		|| collisionCheck(tempX, tempY, tileSize, tileSize, 0, 8+tileSize, 160+tileSize, 0)
+		// floor
+		|| collisionCheck(tempX, tempY, tileSize, tileSize, 0, 144+8+tileSize, 160+tileSize, 0)
+	) 
+	{
+		playSound(CHANNEL_1, boundaryHit);
 	}
 
     else {
@@ -98,7 +120,7 @@ void checkInput() {
 	}
 }
 
-// Check if two rectangles from x1,y1, and extending out h1, h2, 
+// Check if two rectangles from x1,y1, and extending out w1, h2, 
 // overlap with another, x2,y2, and extending out w2, h2
 bool collisionCheck(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2) {
 	if ((x1 < (x2+w2)) && ((x1+w1) > x2) && (y1 < (h2+y2)) && ((y1+h1) > y2)) {
