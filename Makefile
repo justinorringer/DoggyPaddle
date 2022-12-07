@@ -13,9 +13,9 @@ LCC = $(GBDK_HOME)bin/lcc
 PROJECTNAME := Example
 
 BINS	   := $(PROJECTNAME).gb
-CSOURCES   := $(wildcard *.c)
+CSOURCES   := $(wildcard *.c) $(wildcard */*.c)
 
-all:	$(BINS)
+all: clean $(BINS)
 
 # Compile and link all source files in a single call to LCC
 $(BINS):	$(CSOURCES)
@@ -24,3 +24,4 @@ $(BINS):	$(CSOURCES)
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm
 
+build: $(BINS)
