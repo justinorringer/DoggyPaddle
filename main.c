@@ -2,16 +2,19 @@
 #include <stdbool.h>
 
 #include "tiles/pool.h"
-#include "tiles/german.h"
 #include "tiles/ocean.h"
+#include "tiles/german.h"
 #include "maps/pool_map.h"
+
+#include "large.h"
+#include "scrolling.h"
 
 void init();
 void checkInput();
 void updateSwitches();
 bool collisionCheck(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2);
 
-UINT8 player[2];
+Large player;
 
 void main() {
 
@@ -26,33 +29,26 @@ void main() {
 }
 
 void init() {
-	
 	DISPLAY_ON;						// Turn on the display
 	set_bkg_data(0, 11, poolTiles);	// Load 23 tiles into background memory
 	
-	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap); 
+	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap);
+    set_sprite_data(0, 4, germanTiles);
 
-    set_sprite_data(0, 1, oceanTiles);
+	UINT8 sprite_ids[] = {0, 1, 2, 3};
 
-    set_sprite_tile(0, 0);
-
-    player[0] = 32;
-	player[1] = 16;
-
-    move_sprite(0, player[0], player[1]);
+    init_large(&player, sprite_ids, 32, 16, 16, 16);
 }
 
 void updateSwitches() {
-	
 	HIDE_WIN;
 	SHOW_SPRITES;
 	SHOW_BKG;
-	
 }
 
 void checkInput() {
-    int tempX = player[0];
-    int tempY = player[1];
+    UINT8 x_mod = 0;
+	UINT8 y_mod = 0;
 
 	if (joypad() & J_B) {
 		
@@ -61,40 +57,44 @@ void checkInput() {
 	// UP
 	if (joypad() & J_UP) {
 			
-		tempY = tempY - 1;
+		y_mod = y_mod - 1;
 		
 	}
 
 	// DOWN
 	if (joypad() & J_DOWN) {
 			
-		tempY++;
+		y_mod++;
 		
 	}
 
 	// LEFT
 	if (joypad() & J_LEFT) {
 		
-		tempX = tempX - 1;
+		x_mod = x_mod - 1;
 		
 	}	
 	
 	// RIGHT
 	if (joypad() & J_RIGHT) {
 		
-		tempX++;
+		x_mod++;
 		
 	}
 
+	UINT8 tempX = player.x + x_mod;
+	UINT8 tempY = player.y + y_mod;
+
     // Is the player colliding with the left wall?
-	if(collisionCheck(tempX, tempY, 8, 8, 0, 32, 32, 144) == true) {
-		// no op
+	if(collisionCheck(tempX, tempY, 16, 16, 0, 32, 32, 144) == true) {
+		return;
 	}
 
+	if (scroll(player.x + x_mod, x_mod, 0) == true) {
+		move_large(&player, tempX - x_mod, tempY);
+	}
     else {
-        player[0] = tempX;
-        player[1] = tempY;
-        move_sprite(0, player[0], player[1]);
+		move_large(&player, tempX, tempY);
 	}
 }
 
