@@ -3,7 +3,7 @@
 
 // Check if two rectangles from x1,y1, and extending out w1, h2, 
 // overlap with another, x2,y2, and extending out w2, h2
-bool collision_check(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2) {
+bool collision_check(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
 	if ((x1 < (x2+w2)) && ((x1+w1) > x2) && (y1 < (h2+y2)) && ((y1+h1) > y2)) {
 		return true;
 	} else {
@@ -11,7 +11,7 @@ bool collision_check(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2,
 	}
 }
 
-bool player_collision_with_screen(UINT8 x, UINT8 y, UINT8 player_size, UINT8 tile_size){
+bool player_collision_with_screen(int x, int y, int player_size, int tile_size){
 	if(
 		// left wall
 		collision_check(x, y, player_size, player_size, 8, 16, 0, 144)
