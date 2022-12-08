@@ -1,6 +1,6 @@
 /*
 
- GERMAN.H
+ SPRITES.H
 
  Include File.
 
@@ -9,8 +9,8 @@
   Format               : Gameboy 4 color.
   Compression          : None.
   Counter              : None.
-  Tile size            : 16 x 16
-  Tiles                : 0 to 4
+  Tile size            : 8 x 8
+  Tiles                : 0 to 11
 
   Palette colors       : None.
   SGB Palette          : None.
@@ -24,8 +24,8 @@
 
 
 /* Bank of tiles. */
-#define germanTilesBank 0
+#define spriteTilesBank 0
 /* Start of tile array. */
-extern unsigned char germanTiles[];
+extern unsigned char spriteTiles[];
 
-/* End of GERMAN.H */
+/* End of SPRITES.H */

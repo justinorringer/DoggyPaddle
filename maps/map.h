@@ -1,6 +1,6 @@
 /*
 
- POOL_MAP.H
+ MAP.H
 
  Map Include File.
 
@@ -8,7 +8,7 @@
    Section       : 
    Bank          : 0
    Map size      : 30 x 18
-   Tile set      : Z:\home\jorringe\DoggyPaddle\tiles\pool_8x8.gbr
+   Tile set      : Z:\home\jorringe\DoggyPaddle\tiles\ocean.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
    Tile offset   : 0
@@ -18,10 +18,10 @@
 
 */
 
-#define poolMapWidth 30
-#define poolMapHeight 18
-#define poolMapBank 0
+#define mapWidth 30
+#define mapHeight 18
+#define mapBank 0
 
-extern unsigned char poolMap[];
+extern unsigned char map[];
 
-/* End of POOL_MAP.H */
+/* End of MAP.H */
