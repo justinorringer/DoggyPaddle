@@ -1,6 +1,6 @@
 #include <gb/gb.h>
 
-int boundaryHit[5] = {0x16, 0x42, 0x73, 0x00, 0xC3};
+int boundary_hit[5] = {0x16, 0x42, 0x73, 0x00, 0xC3};
 
 void init_sound(void){
     NR52_REG = 0x80; // turns on sound, 1000 0000 binary
