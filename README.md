@@ -10,8 +10,12 @@ Side-scrolling Gameboy Shooter
 
 ## Building yourself
 If you want to make changes and test yourself:
-1. After cloning repo and making your changes, run `make` from the root of the repo
-2. Follow instructions above to run the resulting `.gb` file
+1. Install gbdk: https://github.com/gbdk-2020/gbdk-2020/releases
+2. In your shell environment, set the env variable `GBDK_HOME` to where you installed gbdk
+    + ex, if you installed gbdk to `/usr/local/bin`: `export GBDK_HOME=/usr/local/bin/gbdk`
+4. After cloning repo and making your changes, run `make` from the root of the repo
+    + as an alternative to step 2, you can pass a variable to the call to `make` like so: `make GBDK_HOME=/usr/local/bin/gbdk`
+6. Follow instructions above to run the resulting `.gb` file
 
 
 Developed by [Justin](https://github.com/justinorringer) and [Daniel](https://github.com/dagbay-rh)
