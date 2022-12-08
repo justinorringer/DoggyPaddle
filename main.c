@@ -7,8 +7,8 @@
 #include "maps/pool_map.h"
 #include "sounds/sounds.h"
 
-#include "large.h"
-#include "scrolling.h"
+#include "movement/large.h"
+#include "internal/scrolling.h"
 
 void init();
 void checkInput();
