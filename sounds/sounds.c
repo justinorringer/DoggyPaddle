@@ -1,22 +1,27 @@
 #include <gb/gb.h>
 
-int boundary_hit[5] = {0x16, 0x42, 0x73, 0x00, 0xC3};
+// channels
+#define CHANNEL_1 (int)1
+#define CHANNEL_2 (int)2
+#define CHANNEL_3 (int)3
+#define CHANNEL_4 (int)4
+
+int boundary_hit[6] = {CHANNEL_1, 0x16, 0x42, 0x73, 0x00, 0xC3};
 
 void init_sound(void){
-    NR52_REG = 0x80; // turns on sound, 1000 0000 binary
+    NR52_REG = 0x80; // turns on sound
 	NR50_REG = 0x77; // sets volume for both left and right channel, sets to max
 	NR51_REG = 0xFF; // sets which channels we want to use, all of them. 1111 1111 in binary, 4 sound channels and each have 2 outputs (left and right channel)
 }
 
-void play_sound(int channel, int regs[5]){
-    // switch statement generates compiler warnings for some reason.. bleh
-    if (channel == 1)
-    {
-            NR10_REG = regs[0]; // 0x16
-            NR11_REG = regs[1]; // 0x42
-            NR12_REG = regs[2]; // 0x73
-            NR13_REG = regs[3]; // 0x00
-            NR14_REG = regs[4]; // 0xC3
+void play_sound(int sound[6]){
+    int channel = sound[0];
+    if (channel == CHANNEL_1){
+        NR10_REG = sound[1];
+        NR11_REG = sound[2];
+        NR12_REG = sound[3];
+        NR13_REG = sound[4];
+        NR14_REG = sound[5];
     }
 }
 

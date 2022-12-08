@@ -65,28 +65,24 @@ void checkInput() {
 	
 	// UP
 	if (joypad() & J_UP) {
-			
 		y_mod = y_mod - 1;
 		
 	}
 
 	// DOWN
 	if (joypad() & J_DOWN) {
-			
 		y_mod++;
 		
 	}
 
 	// LEFT
 	if (joypad() & J_LEFT) {
-		
 		x_mod = x_mod - 1;
 		
 	}	
 	
 	// RIGHT
 	if (joypad() & J_RIGHT) {
-		
 		x_mod++;
 		
 	}
@@ -112,16 +108,23 @@ void checkInput() {
 		collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
 	)
 	{
-		play_sound(CHANNEL_1, boundary_hit);
+		play_sound(boundary_hit);
 		return;
 	}
 
 	// screen boundaries
 	if(player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
 	{
-		play_sound(CHANNEL_1, boundary_hit);
+		play_sound(boundary_hit);
 		return;
 	}
+
+	// health check
+	// if (is_player_dead())
+	// {
+		
+	// }
+	
 
 	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
 		move_large(&player, temp_x - x_mod, temp_y);
