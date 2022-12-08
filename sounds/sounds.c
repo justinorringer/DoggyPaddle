@@ -2,13 +2,13 @@
 
 int boundaryHit[5] = {0x16, 0x42, 0x73, 0x00, 0xC3};
 
-void initSound(void){
+void init_sound(void){
     NR52_REG = 0x80; // turns on sound, 1000 0000 binary
 	NR50_REG = 0x77; // sets volume for both left and right channel, sets to max
 	NR51_REG = 0xFF; // sets which channels we want to use, all of them. 1111 1111 in binary, 4 sound channels and each have 2 outputs (left and right channel)
 }
 
-void playSound(int channel, int regs[5]){
+void play_sound(int channel, int regs[5]){
     // switch statement generates compiler warnings for some reason.. bleh
     if (channel == 1)
     {

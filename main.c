@@ -6,14 +6,12 @@
 #include "tiles/sprites.h"
 #include "maps/map.h"
 #include "sounds/sounds.h"
-
-#include "movement/large.h"
-#include "internal/scrolling.h"
+#include "movement/movement.h"
+#include "internal/internal.h"
 
 void init();
 void checkInput();
 void updateSwitches();
-bool collisionCheck(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2);
 
 Large player;
 
@@ -34,16 +32,17 @@ void main() {
 
 void init() {
 	
-	DISPLAY_ON;						// Turn on the display
+	DISPLAY_ON;
 
-	initSound();
-
-	set_bkg_data(0, 11, poolTiles);	// Load 23 tiles into background memory
+	set_bkg_data(0, 11, poolTiles);
 	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
 
 	set_sprite_data(0, 11, spriteTiles);
 	UINT8 sprite_ids[] = {0, 1, 2, 3};
     init_large(&player, sprite_ids, 16, 16, 16, 16);
+
+	init_sound();
+	init_hp();
 }
 
 void updateSwitches() {
@@ -110,26 +109,26 @@ void checkInput() {
 	// obstacle boundaries
 	if (
 		// left wall (pool boundary)
-		collisionCheck(tempX, tempY, playerSize, playerSize, 0, 48, poolBoundary, 144)
+		collision_check(tempX, tempY, playerSize, playerSize, 0, 48, poolBoundary, 144)
 	)
 	{
-		playSound(CHANNEL_1, boundaryHit);
+		play_sound(CHANNEL_1, boundaryHit);
 		return;
 	}
 
 	// screen boundaries
 	if(
 		// left wall (left of screen, not pool boundary)
-		collisionCheck(tempX, tempY, playerSize, playerSize, 8, 16, 0, 144)
+		collision_check(tempX, tempY, playerSize, playerSize, 8, 16, 0, 144)
 		// right wall
-		|| collisionCheck(tempX, tempY, playerSize, playerSize, 160+tileSize, 0, 0, 144+8+tileSize)
+		|| collision_check(tempX, tempY, playerSize, playerSize, 160+tileSize, 0, 0, 144+8+tileSize)
 		// ceiling
-		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 8+tileSize, 160+tileSize, 0)
+		|| collision_check(tempX, tempY, playerSize, playerSize, 0, 8+tileSize, 160+tileSize, 0)
 		// floor
-		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 144-8, 160+tileSize, 0)
+		|| collision_check(tempX, tempY, playerSize, playerSize, 0, 144-8, 160+tileSize, 0)
 	) 
 	{
-		playSound(CHANNEL_1, boundaryHit);
+		play_sound(CHANNEL_1, boundaryHit);
 		return;
 	}
 
@@ -139,15 +138,4 @@ void checkInput() {
     else {
 		move_large(&player, tempX, tempY);
 	}
-}
-
-// Check if two rectangles from x1,y1, and extending out w1, h2, 
-// overlap with another, x2,y2, and extending out w2, h2
-bool collisionCheck(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2) {
-	if ((x1 < (x2+w2)) && ((x1+w1) > x2) && (y1 < (h2+y2)) && ((y1+h1) > y2)) {
-		return true;
-	} else {
-		return false;
-	}
-
 }
