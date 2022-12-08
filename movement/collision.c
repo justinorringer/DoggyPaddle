@@ -10,3 +10,21 @@ bool collision_check(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2,
 		return false;
 	}
 }
+
+bool player_collision_with_screen(UINT8 x, UINT8 y, UINT8 player_size, UINT8 tile_size){
+	if(
+		// left wall
+		collision_check(x, y, player_size, player_size, 8, 16, 0, 144)
+		// right wall
+		|| collision_check(x, y, player_size, player_size, 160+tile_size, 0, 0, 144+8+tile_size)
+		// ceiling
+		|| collision_check(x, y, player_size, player_size, 0, 8+tile_size, 160+tile_size, 0)
+		// floor
+		|| collision_check(x, y, player_size, player_size, 0, 144-8, 160+tile_size, 0)
+	)
+	{
+		return true;
+	}
+	
+	return false;
+}

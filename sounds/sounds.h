@@ -9,4 +9,4 @@ extern void init_sound(void);
 extern void play_sound(int, int[5]);
 
 // sounds
-extern int boundaryHit[5];
+extern int boundary_hit[5];

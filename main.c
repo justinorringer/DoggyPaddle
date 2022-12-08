@@ -91,51 +91,42 @@ void checkInput() {
 		
 	}
 
-	UINT8 tileSize = 8; // px
-	UINT8 playerSize = 16; // px
+	UINT8 tile_size = 8; // px
+	UINT8 player_size = 16; // px
 
-	UINT8 tempX = player.x + x_mod;
-	UINT8 tempY = player.y + y_mod;
+	UINT8 temp_x = player.x + x_mod;
+	UINT8 temp_y = player.y + y_mod;
 
 	// push the pool boundary
-	UINT8 poolBoundary = 32;
-	if (scrolled > poolBoundary) {
-		poolBoundary = 0;
+	UINT8 pool_boundary = 32;
+	if (scrolled > pool_boundary) {
+		pool_boundary = 0;
 	}
 	else {
-		poolBoundary = poolBoundary - scrolled;
+		pool_boundary = pool_boundary - scrolled;
 	}
 
 	// obstacle boundaries
 	if (
 		// left wall (pool boundary)
-		collision_check(tempX, tempY, playerSize, playerSize, 0, 48, poolBoundary, 144)
+		collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
 	)
 	{
-		play_sound(CHANNEL_1, boundaryHit);
+		play_sound(CHANNEL_1, boundary_hit);
 		return;
 	}
 
 	// screen boundaries
-	if(
-		// left wall (left of screen, not pool boundary)
-		collision_check(tempX, tempY, playerSize, playerSize, 8, 16, 0, 144)
-		// right wall
-		|| collision_check(tempX, tempY, playerSize, playerSize, 160+tileSize, 0, 0, 144+8+tileSize)
-		// ceiling
-		|| collision_check(tempX, tempY, playerSize, playerSize, 0, 8+tileSize, 160+tileSize, 0)
-		// floor
-		|| collision_check(tempX, tempY, playerSize, playerSize, 0, 144-8, 160+tileSize, 0)
-	) 
+	if(player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
 	{
-		play_sound(CHANNEL_1, boundaryHit);
+		play_sound(CHANNEL_1, boundary_hit);
 		return;
 	}
 
 	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
-		move_large(&player, tempX - x_mod, tempY);
+		move_large(&player, temp_x - x_mod, temp_y);
 	}
     else {
-		move_large(&player, tempX, tempY);
+		move_large(&player, temp_x, temp_y);
 	}
 }
