@@ -3,8 +3,8 @@
 
 #include "tiles/pool.h"
 #include "tiles/ocean.h"
-#include "tiles/german.h"
-#include "maps/pool_map.h"
+#include "tiles/sprites.h"
+#include "maps/map.h"
 #include "sounds/sounds.h"
 
 #include "movement/large.h"
@@ -39,9 +39,9 @@ void init() {
 	initSound();
 
 	set_bkg_data(0, 11, poolTiles);	// Load 23 tiles into background memory
-	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap); 
+	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
 
-	set_sprite_data(0, 4, germanTiles);
+	set_sprite_data(0, 11, spriteTiles);
 	UINT8 sprite_ids[] = {0, 1, 2, 3};
     init_large(&player, sprite_ids, 16, 16, 16, 16);
 }
@@ -126,7 +126,7 @@ void checkInput() {
 		// ceiling
 		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 8+tileSize, 160+tileSize, 0)
 		// floor
-		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 144+8+tileSize, 160+tileSize, 0)
+		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 144-8, 160+tileSize, 0)
 	) 
 	{
 		playSound(CHANNEL_1, boundaryHit);
