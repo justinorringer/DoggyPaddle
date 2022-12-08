@@ -17,6 +17,9 @@ bool collisionCheck(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, 
 
 Large player;
 
+UINT8 level_left = 30 * 8 - 160;
+UINT8 scrolled = 0;
+
 void main() {
 
 	init();
@@ -38,9 +41,9 @@ void init() {
 	set_bkg_data(0, 11, poolTiles);	// Load 23 tiles into background memory
 	set_bkg_tiles(0, 0, poolMapWidth, poolMapHeight, poolMap); 
 
+	set_sprite_data(0, 4, germanTiles);
 	UINT8 sprite_ids[] = {0, 1, 2, 3};
-
-    init_large(&player, sprite_ids, 32, 16, 16, 16);
+    init_large(&player, sprite_ids, 16, 16, 16, 16);
 }
 
 void updateSwitches() {
@@ -90,33 +93,47 @@ void checkInput() {
 	}
 
 	UINT8 tileSize = 8; // px
+	UINT8 playerSize = 16; // px
 
 	UINT8 tempX = player.x + x_mod;
 	UINT8 tempY = player.y + y_mod;
 
-	if(
-		// left wall (pool boundary)
-		collisionCheck(tempX, tempY, tileSize, tileSize, 0, 32, 32, 144)
-		// left wall 2 (left of screen, not pool boundary)
-		|| collisionCheck(tempX, tempY, tileSize, tileSize, 8, 16, 0, 32)
-		// right wall
-		|| collisionCheck(tempX, tempY, tileSize, tileSize, 160+tileSize, 0, 0, 144+8+tileSize)
-		// ceiling
-		|| collisionCheck(tempX, tempY, tileSize, tileSize, 0, 8+tileSize, 160+tileSize, 0)
-		// floor
-		|| collisionCheck(tempX, tempY, tileSize, tileSize, 0, 144+8+tileSize, 160+tileSize, 0)
-	) 
-	{
-		playSound(CHANNEL_1, boundaryHit);
+	// push the pool boundary
+	UINT8 poolBoundary = 32;
+	if (scrolled > poolBoundary) {
+		poolBoundary = 0;
+	}
+	else {
+		poolBoundary = poolBoundary - scrolled;
 	}
 
-
-    // Is the player colliding with the left wall?
-	if(collisionCheck(tempX, tempY, 16, 16, 0, 32, 32, 144) == true) {
+	// obstacle boundaries
+	if (
+		// left wall (pool boundary)
+		collisionCheck(tempX, tempY, playerSize, playerSize, 0, 48, poolBoundary, 144)
+	)
+	{
+		playSound(CHANNEL_1, boundaryHit);
 		return;
 	}
 
-	if (scroll(player.x + x_mod, x_mod, 0) == true) {
+	// screen boundaries
+	if(
+		// left wall (left of screen, not pool boundary)
+		collisionCheck(tempX, tempY, playerSize, playerSize, 8, 16, 0, 144)
+		// right wall
+		|| collisionCheck(tempX, tempY, playerSize, playerSize, 160+tileSize, 0, 0, 144+8+tileSize)
+		// ceiling
+		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 8+tileSize, 160+tileSize, 0)
+		// floor
+		|| collisionCheck(tempX, tempY, playerSize, playerSize, 0, 144+8+tileSize, 160+tileSize, 0)
+	) 
+	{
+		playSound(CHANNEL_1, boundaryHit);
+		return;
+	}
+
+	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
 		move_large(&player, tempX - x_mod, tempY);
 	}
     else {
