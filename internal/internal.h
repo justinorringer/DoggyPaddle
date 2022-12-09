@@ -5,27 +5,16 @@
 #define I_FRAMES (UINT8)60 // invincibility frames
 #define BS_FRAMES (UINT8)30 // boundary sound frames
 
-#define OPENING_LEVEL (UINT8)0
-#define POOL_LEVEL (UINT8)1
-#define OCEAN_LEVEL (UINT8)2
-
 // game state
 typedef struct {
     bool    game_over;
     UINT16  sys_time_i;
     UINT16  sys_time_bs;
     UINT8   joypad;
-
-    UINT8   level;
-    UINT8   pixels_scrolled; // in pixels
-    UINT8   tiles_scrolled;
 } GameState;
 
-// levels
-void changeLevel(UINT8 level);
-
 // scrolling
-extern bool scroll(UINT8 player_x, UINT8 x_mod, UINT8 y_mod, UINT8 *pixels_scrolled, UINT8 *tiles_scrolled);
+extern bool scroll(UINT8 player_x, UINT8 x_mod, UINT8 y_mod, UINT8 *level_left, UINT8 *scrolled);
 
 // life
 extern void init_hp();
