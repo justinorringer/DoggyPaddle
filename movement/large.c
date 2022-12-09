@@ -3,7 +3,7 @@
 // This will be used for bosses and the character
 struct Large {
     UBYTE id[4];
-    UINT16 x;
+    UINT8 x;
     UINT8 y;
     UINT8 width;
     UINT8 height;
@@ -12,7 +12,7 @@ struct Large {
 typedef struct Large Large;
 
 // x and y are in tiles
-void move_large(Large *large, UINT16 x, UINT8 y) {
+void move_large(Large *large, UINT8 x, UINT8 y) {
     large->x = x;
     large->y = y;
 
@@ -22,8 +22,7 @@ void move_large(Large *large, UINT16 x, UINT8 y) {
     move_sprite(large->id[3], large->x + 8, large->y + 8);
 }
 
-// Initializes the large entity
-void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y) {
+void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT8 x, UINT8 y) {
     large->id[0] = id[0];
     large->id[1] = id[1];
     large->id[2] = id[2];
