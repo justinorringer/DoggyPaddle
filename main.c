@@ -67,7 +67,8 @@ void init() {
 	changeLevel(POOL_LEVEL);
 
 	set_sprite_data(0, 12, spriteTiles);
-    init_large(&player, dog_id, dog_id, 16, 16);
+    init_large(&player, dog_id, 16, 16);
+	render_large(&player, dog_id);
 
 	// dog bowls
 	Small s; // no need to save the bowls in an array

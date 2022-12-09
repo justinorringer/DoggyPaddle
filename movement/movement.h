@@ -24,14 +24,16 @@ extern void move_obstacle(Obstacle *obstacle, UINT16 x, UINT8 y);
 // large
 typedef struct {
     UBYTE id[4];
+    UBYTE sprite_id[4];
     UINT16 x;
     UINT8 y;
     UINT8 width;
     UINT8 height;
 } Large;
 
-extern void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y);
+extern void init_large(Large *large, UBYTE *sprite_id, UINT16 x, UINT8 y);
 extern void move_large(Large *large, UINT16 x, UINT8 y);
+extern void render_large(Large *large, UBYTE *id);
 
 #endif
 
