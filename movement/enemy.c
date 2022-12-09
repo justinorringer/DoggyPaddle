@@ -7,7 +7,7 @@ void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UI
     if (sprite_size == 1) { // Large
         init_large(&enemy->large, id, sprite_id, x, y);
     } else {
-        init_small(&enemy->small, id[0], sprite_id[0], x, y);
+        init_small(&(enemy->small), id[0], sprite_id[0], x, y);
     }
 
     enemy->movement_type = movement_type;

@@ -54,6 +54,21 @@ extern void move_small(Small *small, UINT16 x, UINT8 y);
 
 #endif
 
+#ifndef DATA
+#define DATA
+
+struct EnemyData {
+    UBYTE sprite_id[4];
+    UINT16 x; // in tiles so it doesn't overflow
+    UINT8 y; // in tiles so it doesn't overflow
+    UINT8 sprite_size;
+    UINT8 movement_type;
+};
+
+typedef struct EnemyData EnemyData;
+
+#endif
+
 #ifndef ENEMY_HEADER_GUARD
 #define ENEMY_HEADER_GUARD
 

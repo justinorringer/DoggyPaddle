@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "tiles/pool.h"
 #include "tiles/ocean.h"
@@ -25,7 +26,7 @@ void player_hit(UINT16 time);
 
 GameState game_state;
 Large player;
-Enemy enemy[4];
+Enemy* enemies;
 UINT8 enemy_count;
 Obstacle *obstacle;
 UINT8 obstacle_count;
@@ -73,9 +74,8 @@ void init() {
 	init_small(&s, bowl_id[0], 0x09, 48, 144);
 	init_small(&s, bowl_id[1], 0x09, 48+10, 144);
 	init_small(&s, bowl_id[2], 0x09, 48+20, 144);
-
-	// parse enemy data
-	read_enemy(&enemy, enemy_data, ENEMY_DATA_COUNT, &enemy_count, bowl_id[2]);
+	
+	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count, bowl_id[2]);
 
 	init_sound();
 	init_hp();
@@ -129,21 +129,12 @@ void check_input() {
 	UINT8 temp_x = player.x + x_mod;
 	UINT8 temp_y = player.y + y_mod;
 
-	// push the pool boundary
-	// UINT8 pool_boundary = 32;
-	// if (scrolled > pool_boundary) {
-	// 	pool_boundary = 0;
-	// }
-	// else {
-	// 	pool_boundary = pool_boundary - scrolled;
-	// }
-
 	UINT16 time = sys_time;
 	// obstacle boundaries
-	// if (player_collision_with_enemies(temp_x, temp_y, player_size, enemy, enemy_count)) {
-	// 	player_hit(time);
-	// 	return;
-	// }
+	if (player_collision_with_enemies(temp_x, temp_y, player_size, enemies, enemy_count)) {
+		player_hit(time);
+		return;
+	}
 
 	// screen boundaries
 	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size))

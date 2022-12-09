@@ -3,24 +3,9 @@
 
 #include "movement.h"
 
-#ifndef DATA
-#define DATA
-
-struct EnemyData {
-    UBYTE sprite_id[4];
-    UINT16 x; // in tiles so it doesn't overflow
-    UINT8 y; // in tiles so it doesn't overflow
-    UINT8 sprite_size;
-    UINT8 movement_type;
-};
-
-typedef struct EnemyData EnemyData;
-
-#endif
-
 // Reads in the data for enemies and obstacles
-void read_enemy(Enemy **enemies, EnemyData *data, UINT8 enemy_data_count, UINT8 *enemy_num, UINT8 latest_id) {
-    *enemies = calloc(enemy_data_count, sizeof(Enemy));
+Enemy* read_enemy(EnemyData *data, UINT8 enemy_data_count, UINT8 *enemy_num, UINT8 latest_id) {
+    Enemy* enemies = calloc(enemy_data_count, sizeof(Enemy));
 
     UINT8 id_set[4] = { 0, 0, 0, 0 };
 
@@ -45,9 +30,11 @@ void read_enemy(Enemy **enemies, EnemyData *data, UINT8 enemy_data_count, UINT8 
             latest_id += 4;
         }
 
-        init_enemy(enemies[i], data[i].sprite_size, id_set, data[i].sprite_id, data[i].x, data[i].y, data[i].movement_type);
+        init_enemy(&enemies[i], data[i].sprite_size, id_set, data[i].sprite_id, data[i].x, data[i].y, data[i].movement_type);
         (*enemy_num)++;
     }
+
+    return enemies;
 }
 
 void clear_enemy(Enemy **enemies, UINT8 id) {

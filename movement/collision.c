@@ -47,7 +47,7 @@ bool player_collision_with_enemies(UINT16 x, UINT8 y, UINT8 player_size, Enemy *
 	for(UINT8 i = 0; i < enemy_count; i++){
 		if (enemies[i].active == 0) { continue; }
 
-		UINT8 enemy_x;
+		UINT16 enemy_x;
 		UINT8 enemy_y;
 		UINT8 width;
 		UINT8 height;
