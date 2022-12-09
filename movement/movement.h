@@ -58,7 +58,7 @@ extern void move_small(Small *small, UINT16 x, UINT8 y);
 #define ENEMY_HEADER_GUARD
 
 // enemy
-typedef struct {
+typedef struct Enemy{
     UINT8 sprite_size;
     Large large;
     Small small;

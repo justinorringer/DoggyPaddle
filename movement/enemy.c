@@ -2,14 +2,6 @@
 
 #include "movement.h"
 
-struct Enemy {
-    UINT8 sprite_size;
-    Large large;
-    Small small;
-    UINT8 active;
-    UINT8 movement_type;
-};
-
 void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
     enemy->sprite_size = sprite_size;
     if (sprite_size == 1) { // Large
