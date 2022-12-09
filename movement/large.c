@@ -1,15 +1,7 @@
 #include <gb/gb.h>
+#include "movement.h"
 
 // This will be used for bosses and the character
-struct Large {
-    UBYTE id[4];
-    UINT16 x;
-    UINT8 y;
-    UINT8 width;
-    UINT8 height;
-};
-
-typedef struct Large Large;
 
 // x and y are in tiles
 void move_large(Large *large, UINT16 x, UINT8 y) {

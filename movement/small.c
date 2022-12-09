@@ -1,14 +1,5 @@
 #include <gb/gb.h>
-
-struct Small {
-    UBYTE id;
-    UINT16 x;
-    UINT8 y;
-    UINT8 width;
-    UINT8 height;
-};
-
-typedef struct Small Small;
+#include "movement.h"
 
 void init_small(Small *small, UINT8 id, UINT8 sprite_id, UINT16 x, UINT8 y){
     small->id = id;
