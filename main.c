@@ -34,6 +34,10 @@ UINT8 obstacle_count;
 UINT8 dog_id[] = {0, 1, 2, 3};
 UINT8 bowl_id[] = {4, 5, 6};
 
+// consts for game
+const UINT8 tile_size = 8; // px
+const UINT8 player_size = 16; // px
+
 void main() {
 
 	init();
@@ -71,7 +75,7 @@ void init() {
 	init_small(&s, bowl_id[2], 0x09, 48+20, 144);
 
 	// parse enemy data
-	read_enemy(&enemy, enemy_data, enemy_data_count, &enemy_count, bowl_id[2]);
+	read_enemy(&enemy, enemy_data, ENEMY_DATA_COUNT, &enemy_count, bowl_id[2]);
 
 	init_sound();
 	init_hp();
@@ -122,9 +126,6 @@ void check_input() {
 		
 	}
 
-	UINT8 tile_size = 8; // px
-	UINT8 player_size = 16; // px
-
 	UINT8 temp_x = player.x + x_mod;
 	UINT8 temp_y = player.y + y_mod;
 
@@ -139,7 +140,7 @@ void check_input() {
 
 	UINT16 time = sys_time;
 	// obstacle boundaries
-	// if (enemy_collision) {
+	// if (player_collision_with_enemies(temp_x, temp_y, player_size, enemy, enemy_count)) {
 	// 	player_hit(time);
 	// 	return;
 	// }
