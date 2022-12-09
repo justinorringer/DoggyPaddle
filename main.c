@@ -4,7 +4,9 @@
 #include "tiles/pool.h"
 #include "tiles/ocean.h"
 #include "tiles/sprites.h"
+#include "tiles/text.h"
 #include "maps/map.h"
+#include "maps/text.h"
 #include "sounds/sounds.h"
 #include "movement/movement.h"
 #include "internal/internal.h"
@@ -30,9 +32,13 @@ void main() {
 	while(1) {
 		check_input();				// Check for user input (and act on it)
 		update_switches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
-		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory, waits 1 frame
 		check_game_state();
+		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory, waits 1 frame
+
+		if(game_state.game_over) { break; }
 	}
+
+	restart_game();
 }
 
 void init() {
@@ -157,8 +163,21 @@ void check_game_state(){
 	if (is_player_dead()) {
 		game_state.game_over = true;
 		play_sound(death);
+
+		SHOW_WIN;
+		set_win_data(11, 8, textTiles);
+		// TODO: make this not hard coded lmao
+		set_win_tile_xy(4, 9, 0x0B);  // G
+		set_win_tile_xy(5, 9, 0x0C);  // A
+		set_win_tile_xy(6, 9, 0x0D);  // M
+		set_win_tile_xy(7, 9, 0x0E);  // E
+		set_win_tile_xy(8, 9, 0x13);  // 
+		set_win_tile_xy(9, 9, 0x11);  // O
+		set_win_tile_xy(10, 9, 0x10); // V
+		set_win_tile_xy(11, 9, 0x0E); // E
+		set_win_tile_xy(12, 9, 0x12); // R
+
 		delay(1000);
-		restart_game();
 	}
 }
 
