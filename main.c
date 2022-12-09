@@ -72,9 +72,14 @@ void init() {
 
 	// dog bowls
 	Small s; // no need to save the bowls in an array
-	init_small(&s, bowl_id[0], 0x09, 48, 144);
-	init_small(&s, bowl_id[1], 0x09, 48+10, 144);
-	init_small(&s, bowl_id[2], 0x09, 48+20, 144);
+	init_small(&s, 0x09, 48, 144);
+	render_small(&s, bowl_id[0]);
+	
+	init_small(&s, 0x09, 48+10, 144);
+	render_small(&s, bowl_id[1]);
+	
+	init_small(&s, 0x09, 48+20, 144);
+	render_small(&s, bowl_id[2]);
 	
 	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count, bowl_id[2]);
 

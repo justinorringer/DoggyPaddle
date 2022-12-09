@@ -43,6 +43,7 @@ extern void render_large(Large *large, UBYTE *id);
 // small
 typedef struct {
     UBYTE id;
+    UBYTE sprite_id;
     UINT16 x;
     UINT8 y;
     UINT8 width;
@@ -51,8 +52,9 @@ typedef struct {
 
 // sprite_id is the id in the sprite sheet
 // id is the identifier for the tile
-extern void init_small(Small *small, UINT8 id, UINT8 sprite_id, UINT16 x, UINT8 y);
+extern void init_small(Small *small, UINT8 sprite_id, UINT16 x, UINT8 y);
 extern void move_small(Small *small, UINT16 x, UINT8 y);
+extern void render_small(Small *small, UINT8 id);
 
 #endif
 
