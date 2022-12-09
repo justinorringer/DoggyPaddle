@@ -34,6 +34,7 @@ UINT8 obstacle_count;
 // keep track of sprite ids here, they should increment sequentially
 UINT8 dog_id[] = {0, 1, 2, 3};
 UINT8 bowl_id[] = {4, 5, 6};
+UINT8 next_enemy_id = 7;
 
 // consts for game
 const UINT8 tile_size = 8; // px
@@ -81,7 +82,8 @@ void init() {
 	init_small(&s, 0x09, 48+20, 144);
 	render_small(&s, bowl_id[2]);
 	
-	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count, bowl_id[2]);
+	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count);
+	render_enemy(&enemies[0], get_next_enemy_id(&enemies[0], &next_enemy_id));
 
 	init_sound();
 	init_hp();

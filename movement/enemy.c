@@ -2,7 +2,7 @@
 
 #include "movement.h"
 
-void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
+void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
     enemy->sprite_size = sprite_size;
     if (sprite_size == 1) { // Large
         init_large(&enemy->large, sprite_id, x, y);
@@ -46,4 +46,38 @@ void move_enemy_preset(Enemy *enemy) {
             break;
     }
 
+}
+
+void render_enemy(Enemy *enemy, UINT8 *id) {
+    enemy->active = 1;
+
+    // small
+    if (enemy->sprite_size == 0) {
+        render_small(&(enemy->small), id[0]);   
+    }
+    // beeg
+    else {
+        render_large(&(enemy->large), id);
+    }
+}
+
+UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id) {
+    UINT8 res[4];
+    // small
+    if (enemy->sprite_size == 0) {
+        *(current_id)++;
+        res[0] = *current_id;
+        return res;
+    }
+    // beeg
+    else {
+        UINT8 id = *current_id;
+        *(current_id)+=4;
+        res[0]=id;
+        res[1]=id+1;
+        res[2]=id+2;
+        res[3]=id+3;
+        
+        return res;
+    }
 }
