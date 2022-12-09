@@ -88,7 +88,7 @@ typedef struct Enemy{
 extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type);
 extern void move_enemy(Enemy *enemy, UINT16 x, UINT8 y);
 extern void move_enemy_preset(Enemy *enemy);
-extern void render_enemy(Enemy *enemy, UINT8 *id);
+extern void render_enemy(Enemy *enemy, UINT8 id);
 extern UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id);
 
 #endif

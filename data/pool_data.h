@@ -3,7 +3,7 @@
 #ifndef DATA
 #define DATA
 
-#define ENEMY_DATA_COUNT (UINT8)1
+#define ENEMY_DATA_COUNT (UINT8)2
 
 typedef struct EnemyData{
     UBYTE sprite_id[4];

@@ -23,6 +23,8 @@ void update_switches();
 void check_game_state();
 void restart_game();
 void player_hit(UINT16 time);
+void spawn_enemies();
+void inactive_enemies();
 
 GameState game_state;
 Large player;
@@ -46,6 +48,8 @@ void main() {
 	
 	while(1) {
 		check_input();				// Check for user input (and act on it)
+		inactive_enemies();
+		spawn_enemies();
 		update_switches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
 		check_game_state();
 		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory, waits 1 frame
@@ -83,7 +87,6 @@ void init() {
 	render_small(&s, bowl_id[2]);
 	
 	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count);
-	render_enemy(&enemies[0], get_next_enemy_id(&enemies[0], &next_enemy_id));
 
 	init_sound();
 	init_hp();
@@ -155,8 +158,26 @@ void check_input() {
 	}
 	
 
-	if (scroll(player.x + x_mod, x_mod, 0, &game_state.pixels_scrolled, &game_state.tiles_scrolled) == true) {
+	if (scroll(player.x + x_mod, x_mod, 0, &game_state.pixels_scrolled, &game_state.tiles_scrolled)) {
 		move_large(&player, temp_x - x_mod, temp_y);
+		for (UINT8 i = 0; i < enemy_count; i++){
+			Enemy *enemy = &enemies[i];
+
+			if (enemy->active == 0){ continue; }
+
+			UINT8 enemy_x;
+			UINT8 enemy_y;
+			if (enemy->sprite_size == 0) {
+				enemy_x = enemy->small.x;
+				enemy_y = enemy->small.y;
+			}
+			else{
+				enemy_x = enemy->large.x;
+				enemy_y = enemy->large.y;
+			}
+
+			move_enemy(enemy, enemy_x - x_mod, enemy_y);
+		}
 	}
     else {
 		move_large(&player, temp_x, temp_y);
@@ -195,6 +216,59 @@ void check_game_state(){
 		set_win_tile_xy(12, 9, 0x12); // R
 
 		delay(1000);
+	}
+}
+
+void spawn_enemies(){
+	for (UINT8 i = 0; i < enemy_count; i++){
+		Enemy *enemy = &enemies[i];
+
+		if (enemy->active == 1){ continue; }
+
+		UINT8 enemy_x;
+		if (enemy->sprite_size == 0) {
+			enemy_x = enemy->small.x;
+		}
+		else{
+			enemy_x = enemy->large.x;
+		}
+
+		if ((game_state.tiles_scrolled * 8) + 160 >= enemy_x) {
+			render_enemy(enemy, 7+i);
+			// render_enemy(enemy, get_next_enemy_id(enemy, &next_enemy_id));
+		}
+	}
+}
+
+void inactive_enemies(){
+	for (UINT8 i = 0; i < enemy_count; i++) {
+		Enemy *enemy = &enemies[i];
+
+		if (enemy->active == 0){ continue; }
+
+		UINT8 enemy_x = enemy->small.x;
+		UINT8 id = enemy->small.id;
+		// UINT8 id[4] = {0, 0, 0, 0};
+		// if (enemy->sprite_size == 0) {
+		// 	enemy_x = enemy->small.x;
+		// 	id[0] = enemy->small.id;
+		// }
+		// else{
+		// 	enemy_x = enemy->large.x;
+		// 	id[0] = enemy->large.id[0];
+		// 	id[1] = enemy->large.id[1];
+		// 	id[2] = enemy->large.id[2];
+		// 	id[3] = enemy->large.id[3];
+		// }
+
+		if (enemy_x < (game_state.tiles_scrolled * 8)) {
+			enemy->active = 0;
+			hide_sprite(id);
+			// for (UINT8 j = 0; j < 4; j++) {
+			// 	if (id[j] == 0) { continue; }
+			// 	hide_sprite(id[j]);
+			// }
+		}
 	}
 }
 

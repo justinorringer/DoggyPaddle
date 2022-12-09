@@ -14,6 +14,10 @@ void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UIN
 }
 
 void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
+    if (enemy->active == 0) {
+        return;
+    }
+
     if (enemy->sprite_size == 1) { // Large
         move_large(&enemy->large, x, y);
     } else {
@@ -23,6 +27,10 @@ void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
 
 // This function is based on the movement_type field
 void move_enemy_preset(Enemy *enemy) {
+    if (enemy->active == 0) {
+        return;
+    }
+    
     UINT16 x;
     UINT8 y;
     if (enemy->sprite_size == 1) { // Large
@@ -48,16 +56,16 @@ void move_enemy_preset(Enemy *enemy) {
 
 }
 
-void render_enemy(Enemy *enemy, UINT8 *id) {
+void render_enemy(Enemy *enemy, UINT8 id) {
     enemy->active = 1;
 
     // small
     if (enemy->sprite_size == 0) {
-        render_small(&(enemy->small), id[0]);   
+        render_small(&(enemy->small), id);   
     }
     // beeg
     else {
-        render_large(&(enemy->large), id);
+        // render_large(&(enemy->large), id);
     }
 }
 
@@ -65,14 +73,14 @@ UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id) {
     UINT8 res[4];
     // small
     if (enemy->sprite_size == 0) {
-        *(current_id)++;
+        *current_id = *current_id + 1;
         res[0] = *current_id;
         return res;
     }
     // beeg
     else {
         UINT8 id = *current_id;
-        *(current_id)+=4;
+        *current_id = *current_id + 4;
         res[0]=id;
         res[1]=id+1;
         res[2]=id+2;
