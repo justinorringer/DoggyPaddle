@@ -48,19 +48,23 @@ void init() {
 	
 	DISPLAY_ON;
 
-	set_bkg_data(0, 11, oceanTiles);
+	set_bkg_data(0, 11, poolTiles);
 	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
 
 	set_sprite_data(0, 13, spriteTiles);
 	UINT8 sprite_ids[] = {0, 1, 2, 3};
     init_large(&player, sprite_ids, 16, 16, 16, 16);
 	// dog bowls
-	init_small(0x09, 48, 144);
-	init_small(0x0B, 48+10, 144);
-	init_small(0x0C, 48+20, 144);
+	init_small(0x09, 20, 144);
+	init_small(0x0B, 30, 144);
+	init_small(0x0C, 40, 144);
+
+	// sample bone
+	init_small(0x08, 100, 100);
 
 	init_sound();
 	init_hp();
+	init_score();
 }
 
 void update_switches() {
@@ -143,10 +147,20 @@ void check_input() {
 		}
 		return;
 	}
-	
+
+	// collide with bone
+	if (collision_check(temp_x, temp_y, player_size, player_size, 100, 100, 20, 20)) {
+		// add to score
+		inc_score();
+		// remove bone sprite
+		hide_sprite(player.sprite_id[0]);
+
+		play_sound(bone_collect);
+	}
 
 	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
 		move_large(&player, temp_x - x_mod, temp_y);
+		scroll_sprite(0x08, -1 * x_mod, 0);
 	}
     else {
 		move_large(&player, temp_x, temp_y);

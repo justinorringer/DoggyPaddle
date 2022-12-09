@@ -23,5 +23,13 @@ extern void dec_hp();
 extern bool is_player_dead();
 extern UINT8 get_hp();
 
+// score
+#define DIGIT_INDEX (UINT8)22
+
+extern void init_score();
+extern void inc_score();
+extern UINT16 get_score();
+extern void reset_score();
+
 // frames
 bool is_grace_period_over(UINT8 n_grace_frames, UINT16 time, UINT16 prev_time);
