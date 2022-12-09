@@ -190,6 +190,7 @@ void check_game_state(){
 	}
 }
 
+// lazy way to restart game, will reload the rom
 void restart_game(){
 	while (1) {
 		if (joypad())
