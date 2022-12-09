@@ -125,11 +125,12 @@ void check_input() {
 	}
 
 	// screen boundaries
-	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size)
-		&& is_grace_period_over(BS_FRAMES, time, game_state.sys_time_bs))
+	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
 	{
-		play_sound(boundary_hit);
-		game_state.sys_time_i = sys_time;
+		if (is_grace_period_over(BS_FRAMES, time, game_state.sys_time_bs)) {
+			play_sound(boundary_hit);
+			game_state.sys_time_bs = sys_time;
+		}
 		return;
 	}
 	
