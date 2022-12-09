@@ -21,6 +21,7 @@ extern void init_hp();
 extern void inc_hp();
 extern void dec_hp();
 extern bool is_player_dead();
+extern UINT8 get_hp();
 
 // frames
 bool is_grace_period_over(UINT8 n_grace_frames, UINT16 time, UINT16 prev_time);

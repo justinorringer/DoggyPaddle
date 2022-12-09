@@ -21,3 +21,7 @@ void dec_hp(){
 bool is_player_dead(){
     return hp == 0;
 }
+
+UINT8 get_hp(){
+    return hp;
+}

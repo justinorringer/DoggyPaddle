@@ -15,3 +15,5 @@ typedef struct {
 
 extern void init_large(Large *large, UBYTE *sprite_ids, UINT8 x, UINT8 y, UINT8 width, UINT8 height);
 extern void move_large(Large *large, UINT8 x, UINT8 y);
+
+extern void init_small(UINT8 sprite_id, UINT8 x, UINT8 y);

@@ -51,9 +51,13 @@ void init() {
 	set_bkg_data(0, 11, oceanTiles);
 	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
 
-	set_sprite_data(0, 11, spriteTiles);
+	set_sprite_data(0, 13, spriteTiles);
 	UINT8 sprite_ids[] = {0, 1, 2, 3};
     init_large(&player, sprite_ids, 16, 16, 16, 16);
+	// dog bowls
+	init_small(0x09, 48, 144);
+	init_small(0x0B, 48+10, 144);
+	init_small(0x0C, 48+20, 144);
 
 	init_sound();
 	init_hp();
@@ -151,9 +155,12 @@ void check_input() {
 
 // check if invincibility frames ran out, and take damage if yes
 void player_hit(UINT16 time){
+	UINT8 bowls[3] = {0x09, 0x0B, 0x0C};
+
 	if (is_grace_period_over(I_FRAMES, time, game_state.sys_time_i)) {
 		// invinibility ran out, player takes damage
 		dec_hp();
+		hide_sprite(bowls[get_hp()]);
 		play_sound(boundary_hit);
 		game_state.sys_time_i = time;
 	}
@@ -163,10 +170,12 @@ void check_game_state(){
 	if (is_player_dead()) {
 		game_state.game_over = true;
 		play_sound(death);
+		delay(1000);
 
 		SHOW_WIN;
 		set_win_data(11, 8, textTiles);
 		// TODO: make this not hard coded lmao
+		set_win_tile_xy(3, 9, 0x13);  // 
 		set_win_tile_xy(4, 9, 0x0B);  // G
 		set_win_tile_xy(5, 9, 0x0C);  // A
 		set_win_tile_xy(6, 9, 0x0D);  // M
