@@ -7,7 +7,7 @@
  Info:
    Section       : 
    Bank          : 0
-   Map size      : 30 x 18
+   Map size      : 32 x 18
    Tile set      : Z:\home\jorringe\DoggyPaddle\tiles\ocean.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
@@ -18,7 +18,7 @@
 
 */
 
-#define mapWidth 30
+#define mapWidth 32
 #define mapHeight 18
 #define mapBank 0
 

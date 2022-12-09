@@ -1,11 +1,16 @@
 #include <gb/gb.h>
 #include <stdbool.h>
 
+#include "../tiles/ocean.h"
+#include "internal.h"
+
 // ~40% of the screen width
-UINT8 gameplay_x = 55;
+UINT8 gameplay_x = 56;
+
+UINT8 map_distance = 120;
 
 // pass in sprites to move them with the background
-bool scroll(UINT8 player_x, UINT8 x_mod, UINT8 y_mod, UINT8 *level_left, UINT8 *scrolled) {
+bool scroll(UINT8 player_x, UINT8 x_mod, UINT8 y_mod, UINT8 *pixels_scrolled, UINT8 *tiles_scrolled) {
     if (x_mod <= 0) {
         return false;
     }
@@ -14,15 +19,23 @@ bool scroll(UINT8 player_x, UINT8 x_mod, UINT8 y_mod, UINT8 *level_left, UINT8 *
         return false;
     }
 
-    if (*level_left <= 0) {
+    if (*tiles_scrolled >= map_distance) {
         return false;
     }
 
-    // decrement level_left by x_mod
-    *level_left = *level_left - x_mod;
-    *scrolled = *scrolled + x_mod;
+    *pixels_scrolled = *pixels_scrolled + x_mod;
+
+    if (*pixels_scrolled >= 8) {
+        *pixels_scrolled = *pixels_scrolled - 8;
+        *tiles_scrolled = *tiles_scrolled + 1;
+    }
 
     scroll_bkg(x_mod, y_mod);
 
     return true;
+}
+
+void reset_scroll(UINT8 *pixels_scrolled, UINT8 *tiles_scrolled) {
+    *pixels_scrolled = 0;
+    *tiles_scrolled = 0;
 }

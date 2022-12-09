@@ -1,19 +1,79 @@
 #include <gb/gb.h>
+#include <stdbool.h>
 
-// collision
-extern bool collision_check(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2);
-extern bool player_collision_with_screen(int x, int y, int player_size, int tile_size);
+#ifndef OBSTACLE_HEADER_GUARD
+#define OBSTACLE_HEADER_GUARD
+
+// obstacle
+typedef struct {
+    UINT8 id;
+    UINT8 x;
+    UINT8 y;
+    UINT8 width;
+    UINT8 height;
+} Obstacle;
+
+extern void init_obstacle(Obstacle *obstacle, UINT8 id, UINT8 x, UINT8 y, UINT8 width, UINT8 height);
+extern void move_obstacle(Obstacle *obstacle, UINT8 x, UINT8 y);
+
+#endif
+
+#ifndef LARGE_HEADER_GUARD
+#define LARGE_HEADER_GUARD
 
 // large
 typedef struct {
-    UBYTE sprite_id[4];
+    UBYTE id[4];
     UINT8 x;
     UINT8 y;
     UINT8 width;
     UINT8 height;
 } Large;
 
-extern void init_large(Large *large, UBYTE *sprite_ids, UINT8 x, UINT8 y, UINT8 width, UINT8 height);
+extern void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT8 x, UINT8 y);
 extern void move_large(Large *large, UINT8 x, UINT8 y);
 
-extern void init_small(UINT8 sprite_id, UINT8 x, UINT8 y);
+#endif
+
+#ifndef SMALL_HEADER_GUARD
+#define SMALL_HEADER_GUARD
+
+// small
+typedef struct {
+    UBYTE id;
+    UINT8 x;
+    UINT8 y;
+    UINT8 width;
+    UINT8 height;
+} Small;
+
+// sprite_id is the id in the sprite sheet
+// id is the identifier for the tile
+extern void init_small(Small *small, UINT8 id, UINT8 sprite_id, UINT8 x, UINT8 y);
+extern void move_small(Small *small, UINT8 x, UINT8 y);
+
+#endif
+
+#ifndef ENEMY_HEADER_GUARD
+#define ENEMY_HEADER_GUARD
+
+// enemy
+typedef struct {
+    UINT8 sprite_size;
+    Large large;
+    Small small;
+    UINT8 active;
+    UINT8 movement_type;
+} Enemy;
+
+extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT8 x, UINT8 y, UINT8 movement_type);
+extern void move_enemy(Enemy *enemy, UINT8 x, UINT8 y);
+extern void move_enemy_preset(Enemy *enemy);
+
+#endif
+
+// collision
+extern bool collision_check(UINT8 x1, UINT8 y1, UINT8 w1, UINT8 h1, UINT8 x2, UINT8 y2, UINT8 w2, UINT8 h2);
+extern bool player_collision_with_screen(UINT8 x, UINT8 y, UINT8 player_size, UINT8 tile_size);
+extern bool player_collision_with_obstacles(UINT8 x, UINT8 y, UINT8 player_size, Obstacle *obstacles, UINT8 obstacle_count);
+extern bool player_collision_with_enemies(UINT8 x, UINT8 y, UINT8 player_size, Enemy *enemies, UINT8 enemy_count);
