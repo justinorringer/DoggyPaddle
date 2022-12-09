@@ -1,7 +1,7 @@
 #include <gb/gb.h>
 #include <stdbool.h>
 
-UINT8 hp = 0;
+UINT8 hp;
 UINT8 default_base_hp = 3;
 
 void init_hp(){

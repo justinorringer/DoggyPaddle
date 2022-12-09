@@ -10,11 +10,16 @@
 #include "internal/internal.h"
 
 void init();
-void checkInput();
-void updateSwitches();
+void check_input();
+void update_switches();
+void check_game_state();
+void restart_game();
+void player_hit(UINT16 time);
 
 Large player;
+GameState game_state;
 
+// TODO: we can probably move these into GameState? or some default config struct
 UINT8 level_left = 30 * 8 - 160;
 UINT8 scrolled = 0;
 
@@ -23,18 +28,21 @@ void main() {
 	init();
 	
 	while(1) {
-		checkInput();				// Check for user input (and act on it)
-		updateSwitches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
-		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory
+		check_input();				// Check for user input (and act on it)
+		update_switches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
+		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory, waits 1 frame
+		check_game_state();
 	}
-	
 }
 
 void init() {
+	game_state.game_over = false;
+	game_state.sys_time_i = UINT16_MAX - I_FRAMES;
+	game_state.sys_time_bs = UINT16_MAX - BS_FRAMES;
 	
 	DISPLAY_ON;
 
-	set_bkg_data(0, 11, poolTiles);
+	set_bkg_data(0, 11, oceanTiles);
 	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
 
 	set_sprite_data(0, 11, spriteTiles);
@@ -45,44 +53,47 @@ void init() {
 	init_hp();
 }
 
-void updateSwitches() {
+void update_switches() {
 	HIDE_WIN;
 	SHOW_SPRITES;
 	SHOW_BKG;
 }
 
-void checkInput() {
-    UINT8 x_mod = 0;
+void check_input() {
+    game_state.joypad = joypad();
+	
+	UINT8 x_mod = 0;
 	UINT8 y_mod = 0;
+	
 
-	if (joypad() & J_A) {
-		
-    }
+	if (game_state.joypad & J_A) {
 
-	if (joypad() & J_B) {
+	}
+
+	if (game_state.joypad & J_B) {
 		
     }
 	
 	// UP
-	if (joypad() & J_UP) {
+	if (game_state.joypad & J_UP) {
 		y_mod = y_mod - 1;
 		
 	}
 
 	// DOWN
-	if (joypad() & J_DOWN) {
+	if (game_state.joypad & J_DOWN) {
 		y_mod++;
 		
 	}
 
 	// LEFT
-	if (joypad() & J_LEFT) {
+	if (game_state.joypad & J_LEFT) {
 		x_mod = x_mod - 1;
 		
 	}	
 	
 	// RIGHT
-	if (joypad() & J_RIGHT) {
+	if (game_state.joypad & J_RIGHT) {
 		x_mod++;
 		
 	}
@@ -102,28 +113,25 @@ void checkInput() {
 		pool_boundary = pool_boundary - scrolled;
 	}
 
+	UINT16 time = sys_time;
 	// obstacle boundaries
 	if (
 		// left wall (pool boundary)
 		collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
 	)
 	{
-		play_sound(boundary_hit);
+		player_hit(time);
 		return;
 	}
 
 	// screen boundaries
-	if(player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
+	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size)
+		&& is_grace_period_over(BS_FRAMES, time, game_state.sys_time_bs))
 	{
 		play_sound(boundary_hit);
+		game_state.sys_time_i = sys_time;
 		return;
 	}
-
-	// health check
-	// if (is_player_dead())
-	// {
-		
-	// }
 	
 
 	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
@@ -131,5 +139,34 @@ void checkInput() {
 	}
     else {
 		move_large(&player, temp_x, temp_y);
+	}
+}
+
+// check if invincibility frames ran out, and take damage if yes
+void player_hit(UINT16 time){
+	if (is_grace_period_over(I_FRAMES, time, game_state.sys_time_i)) {
+		// invinibility ran out, player takes damage
+		dec_hp();
+		play_sound(boundary_hit);
+		game_state.sys_time_i = time;
+	}
+}
+
+void check_game_state(){
+	if (is_player_dead()) {
+		game_state.game_over = true;
+		play_sound(death);
+		delay(1000);
+		restart_game();
+	}
+}
+
+void restart_game(){
+	while (1) {
+		if (joypad())
+		{
+			reset();
+		}
+		
 	}
 }

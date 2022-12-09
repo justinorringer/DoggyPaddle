@@ -6,7 +6,9 @@
 #define CHANNEL_3 (int)3
 #define CHANNEL_4 (int)4
 
-int boundary_hit[6] = {CHANNEL_1, 0x16, 0x42, 0x73, 0x00, 0xC3};
+// sounds
+const int boundary_hit[6] = {CHANNEL_1, 0x16, 0x42, 0x73, 0x00, 0xC3};
+const int death[6] = {CHANNEL_1, 0x00, 0x82, 0x57, 0x7E, 0x84};
 
 void init_sound(void){
     NR52_REG = 0x80; // turns on sound
@@ -14,7 +16,7 @@ void init_sound(void){
 	NR51_REG = 0xFF; // sets which channels we want to use, all of them. 1111 1111 in binary, 4 sound channels and each have 2 outputs (left and right channel)
 }
 
-void play_sound(int sound[6]){
+void play_sound(const int sound[6]){
     int channel = sound[0];
     if (channel == CHANNEL_1){
         NR10_REG = sound[1];
