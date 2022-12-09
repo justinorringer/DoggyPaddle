@@ -1,16 +1,27 @@
-int HP;
-int DEFAULT_BASE_HP = 3;
+#include <gb/gb.h>
+#include <stdbool.h>
+
+UINT8 hp;
+UINT8 default_base_hp = 3;
 
 void init_hp(){
-    HP = DEFAULT_BASE_HP;
+    hp = default_base_hp;
 }
 
 // increment HP
 void inc_hp(){
-    HP++;
+    hp++;
 }
 
 // decrement HP
 void dec_hp(){
-    HP = HP - 1;
+    hp = hp - 1;
+}
+
+bool is_player_dead(){
+    return hp == 0;
+}
+
+UINT8 get_hp(){
+    return hp;
 }

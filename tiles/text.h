@@ -1,6 +1,6 @@
 /*
 
- SPRITES.H
+ TEXT.H
 
  Include File.
 
@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 13
+  Tiles                : 0 to 9
 
   Palette colors       : None.
   SGB Palette          : None.
@@ -24,8 +24,8 @@
 
 
 /* Bank of tiles. */
-#define spriteTilesBank 0
+#define textTilesBank 0
 /* Start of tile array. */
-extern unsigned char spriteTiles[];
+extern unsigned char textTiles[];
 
-/* End of SPRITES.H */
+/* End of TEXT.H */
