@@ -9,6 +9,8 @@
 #define POOL_LEVEL (UINT8)1
 #define OCEAN_LEVEL (UINT8)2
 
+#define DEFAULT_HP (UINT8)3;
+
 // game state
 typedef struct {
     bool    game_over;

@@ -1,11 +1,11 @@
 #include <gb/gb.h>
 #include <stdbool.h>
+#include "internal.h"
 
 UINT8 hp;
-UINT8 default_base_hp = 3;
 
 void init_hp(){
-    hp = default_base_hp;
+    hp = DEFAULT_HP;
 }
 
 // increment HP

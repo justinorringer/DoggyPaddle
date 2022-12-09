@@ -30,7 +30,9 @@ UINT8 enemy_count;
 Obstacle *obstacle;
 UINT8 obstacle_count;
 
-UINT8 bowl_ids[] = {4, 5, 6};
+// keep track of sprite ids here, they should increment sequentially
+UINT8 dog_id[] = {0, 1, 2, 3};
+UINT8 bowl_id[] = {4, 5, 6};
 
 void main() {
 
@@ -60,18 +62,16 @@ void init() {
 	changeLevel(POOL_LEVEL);
 
 	set_sprite_data(0, 12, spriteTiles);
-	UINT8 id[] = {0, 1, 2, 3};
-	UINT8 sprite_id[] = {0, 1, 2, 3};
-    init_large(&player, id, sprite_id, 16, 16);
+    init_large(&player, dog_id, dog_id, 16, 16);
 
 	// dog bowls
 	Small s; // no need to save the bowls in an array
-	init_small(&s, bowl_ids[0], 0x09, 48, 144);
-	init_small(&s, bowl_ids[1], 0x09, 48+10, 144);
-	init_small(&s, bowl_ids[2], 0x09, 48+20, 144);
+	init_small(&s, bowl_id[0], 0x09, 48, 144);
+	init_small(&s, bowl_id[1], 0x09, 48+10, 144);
+	init_small(&s, bowl_id[2], 0x09, 48+20, 144);
 
 	// parse enemy data
-	read_enemy(&enemy, enemy_data, enemy_data_count, &enemy_count, bowl_ids[2]);
+	read_enemy(&enemy, enemy_data, enemy_data_count, &enemy_count, bowl_id[2]);
 
 	init_sound();
 	init_hp();
@@ -168,7 +168,7 @@ void player_hit(UINT16 time){
 	if (is_grace_period_over(I_FRAMES, time, game_state.sys_time_i)) {
 		// invinibility ran out, player takes damage
 		dec_hp();
-		hide_sprite(bowl_ids[get_hp()]);
+		hide_sprite(bowl_id[get_hp()]);
 		play_sound(boundary_hit);
 		game_state.sys_time_i = time;
 	}
