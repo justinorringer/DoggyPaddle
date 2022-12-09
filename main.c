@@ -66,9 +66,9 @@ void init() {
 
 	// dog bowls
 	Small s; // no need to save the bowls in an array
-	init_small(&s, 0x09, bowl_ids[0], 48, 144);
-	init_small(&s, 0x09, bowl_ids[1], 48+10, 144);
-	init_small(&s, 0x09, bowl_ids[2], 48+20, 144);
+	init_small(&s, bowl_ids[0], 0x09, 48, 144);
+	init_small(&s, bowl_ids[1], 0x09, 48+10, 144);
+	init_small(&s, bowl_ids[2], 0x09, 48+20, 144);
 
 	// parse enemy data
 	read_enemy(&enemy, enemy_data, enemy_data_count, &enemy_count, bowl_ids[2]);
@@ -139,11 +139,7 @@ void check_input() {
 
 	UINT16 time = sys_time;
 	// obstacle boundaries
-	// if (
-	// 	// left wall (pool boundary)
-	// 	collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
-	// )
-	// {
+	// if (enemy_collision) {
 	// 	player_hit(time);
 	// 	return;
 	// }
