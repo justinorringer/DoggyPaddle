@@ -39,3 +39,12 @@ void render_large(Large *large, UBYTE *id) {
 
     move_large(large, large->x, large->y);
 }
+
+void hide_large(Large *large) {
+    move_large(large, 0, 0);
+    
+    hide_sprite(large->id[0]);
+    hide_sprite(large->id[1]);
+    hide_sprite(large->id[2]);
+    hide_sprite(large->id[3]);
+}

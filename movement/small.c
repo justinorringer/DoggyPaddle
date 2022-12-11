@@ -22,3 +22,8 @@ void render_small(Small *small, UINT8 id) {
     set_sprite_tile(id, small->sprite_id);
     move_sprite(id, small->x, small->y);
 }
+
+void hide_small(Small *small) {
+    move_small(small, 0, 0);
+    hide_sprite(small->id);
+}

@@ -34,6 +34,7 @@ typedef struct {
 extern void init_large(Large *large, UBYTE *sprite_id, UINT16 x, UINT8 y);
 extern void move_large(Large *large, UINT16 x, UINT8 y);
 extern void render_large(Large *large, UBYTE *id);
+extern void hide_large(Large *large);
 
 #endif
 
@@ -55,6 +56,7 @@ typedef struct {
 extern void init_small(Small *small, UINT8 sprite_id, UINT16 x, UINT8 y);
 extern void move_small(Small *small, UINT16 x, UINT8 y);
 extern void render_small(Small *small, UINT8 id);
+extern void hide_small(Small *small);
 
 #endif
 
@@ -89,7 +91,11 @@ extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16
 extern void move_enemy(Enemy *enemy, UINT16 x, UINT8 y);
 extern void move_enemy_preset(Enemy *enemy);
 extern void render_enemy(Enemy *enemy, UINT8 id);
+extern void hide_enemy(Enemy *enemy);
 extern UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id);
+extern UINT8 is_active(Enemy *enemy);
+extern UINT8 is_dead(Enemy *enemy);
+extern UINT8 has_spawned(Enemy *enemy);
 
 #endif
 

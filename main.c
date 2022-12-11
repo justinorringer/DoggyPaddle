@@ -64,8 +64,7 @@ void init() {
 	game_state.game_over = false;
 	game_state.sys_time_i = UINT16_MAX - I_FRAMES;
 	game_state.sys_time_bs = UINT16_MAX - BS_FRAMES;
-	game_state.pixels_scrolled = 0;
-	game_state.tiles_scrolled = 0;
+	game_state.scrolled = 0;
 
 	DISPLAY_ON;
 
@@ -158,12 +157,12 @@ void check_input() {
 	}
 	
 
-	if (scroll(player.x + x_mod, x_mod, 0, &game_state.pixels_scrolled, &game_state.tiles_scrolled)) {
+	if (scroll(player.x + x_mod, x_mod, 0, &game_state.scrolled)) {
 		move_large(&player, temp_x - x_mod, temp_y);
 		for (UINT8 i = 0; i < enemy_count; i++){
 			Enemy *enemy = &enemies[i];
 
-			if (enemy->active == 0){ continue; }
+			if (has_spawned(enemy) == 0){ continue; }
 
 			UINT8 enemy_x;
 			UINT8 enemy_y;
@@ -223,9 +222,9 @@ void spawn_enemies(){
 	for (UINT8 i = 0; i < enemy_count; i++){
 		Enemy *enemy = &enemies[i];
 
-		if (enemy->active == 1){ continue; }
+		if (has_spawned(enemy) == 1){ continue; }
 
-		UINT8 enemy_x;
+		UINT16 enemy_x;
 		if (enemy->sprite_size == 0) {
 			enemy_x = enemy->small.x;
 		}
@@ -233,7 +232,7 @@ void spawn_enemies(){
 			enemy_x = enemy->large.x;
 		}
 
-		if ((game_state.tiles_scrolled * 8) + 160 >= enemy_x) {
+		if (game_state.scrolled + 160 >= enemy_x) {
 			render_enemy(enemy, 7+i);
 			// render_enemy(enemy, get_next_enemy_id(enemy, &next_enemy_id));
 		}
@@ -244,9 +243,9 @@ void inactive_enemies(){
 	for (UINT8 i = 0; i < enemy_count; i++) {
 		Enemy *enemy = &enemies[i];
 
-		if (enemy->active == 0){ continue; }
+		if (is_active(enemy) == 1 && is_dead(enemy) == 1){ continue; }
 
-		UINT8 enemy_x = enemy->small.x;
+		UINT16 enemy_x = enemy->small.x;
 		UINT8 id = enemy->small.id;
 		// UINT8 id[4] = {0, 0, 0, 0};
 		// if (enemy->sprite_size == 0) {
@@ -261,14 +260,11 @@ void inactive_enemies(){
 		// 	id[3] = enemy->large.id[3];
 		// }
 
-		if (enemy_x < (game_state.tiles_scrolled * 8)) {
-			enemy->active = 0;
-			hide_sprite(id);
-			// for (UINT8 j = 0; j < 4; j++) {
-			// 	if (id[j] == 0) { continue; }
-			// 	hide_sprite(id[j]);
-			// }
+		if (game_state.scrolled < enemy_x && enemy_x < game_state.scrolled + 160) {
+			continue;
 		}
+		
+		// hide_enemy(enemy);
 	}
 }
 

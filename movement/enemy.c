@@ -69,6 +69,19 @@ void render_enemy(Enemy *enemy, UINT8 id) {
     }
 }
 
+void hide_enemy(Enemy *enemy) {
+    enemy->active = 0;
+
+    // small
+    if (enemy->sprite_size == 0) {
+        hide_small(&(enemy->small));
+    }
+    // beeg
+    else {
+        hide_large(&(enemy->large));
+    }
+}
+
 UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id) {
     UINT8 res[4];
     // small
@@ -88,4 +101,25 @@ UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id) {
         
         return res;
     }
+}
+
+UINT8 is_active(Enemy *enemy) {
+    if (enemy->active == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+UINT8 has_spawned(Enemy *enemy) {
+    if (enemy->active == 1 || enemy->active == 2) {
+        return 1;
+    }
+    return 0;
+}
+
+UINT8 is_dead(Enemy *enemy) {
+    if (enemy->active == 2) {
+        return 1;
+    }
+    return 0;
 }

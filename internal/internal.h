@@ -19,15 +19,14 @@ typedef struct {
     UINT8   joypad;
 
     UINT8   level;
-    UINT8   pixels_scrolled; // in pixels
-    UINT8   tiles_scrolled;
+    UINT16  scrolled;
 } GameState;
 
 // levels
 void changeLevel(UINT8 level);
 
 // scrolling
-extern bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT8 *pixels_scrolled, UINT8 *tiles_scrolled);
+extern bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled);
 
 // life
 extern void init_hp();
