@@ -65,6 +65,7 @@ void init() {
 	game_state.sys_time_i = UINT16_MAX - I_FRAMES;
 	game_state.sys_time_bs = UINT16_MAX - BS_FRAMES;
 	game_state.scrolled = 0;
+	game_state.level = POOL_LEVEL;
 
 	DISPLAY_ON;
 
@@ -214,6 +215,10 @@ void check_game_state(){
 		set_win_tile_xy(11, 9, 0x0E); // E
 		set_win_tile_xy(12, 9, 0x12); // R
 
+		delay(1000);
+	}
+
+	if (checkLevelChange(&(game_state.level), &(game_state.scrolled))) {
 		delay(1000);
 	}
 }

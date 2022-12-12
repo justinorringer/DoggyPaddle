@@ -9,7 +9,9 @@
 #define POOL_LEVEL (UINT8)1
 #define OCEAN_LEVEL (UINT8)2
 
-#define DEFAULT_HP (UINT8)3;
+#define DEFAULT_HP (UINT8)3
+
+#define MAP_DISTANCE (UINT16)960
 
 // game state
 typedef struct {
@@ -23,10 +25,12 @@ typedef struct {
 } GameState;
 
 // levels
-void changeLevel(UINT8 level);
+extern void changeLevel(UINT8 level);
+extern bool checkLevelChange(UINT8 *level, UINT16 *scrolled);
 
 // scrolling
 extern bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled);
+extern bool is_end_of_map(UINT16 scrolled);
 
 // life
 extern void init_hp();

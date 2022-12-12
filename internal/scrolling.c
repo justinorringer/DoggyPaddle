@@ -7,8 +7,6 @@
 // ~40% of the screen width
 UINT8 gameplay_x = 56;
 
-UINT16 map_distance = 120 * 8;
-
 // pass in sprites to move them with the background
 bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled) {
     if (x_mod <= 0) {
@@ -19,7 +17,7 @@ bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled) {
         return false;
     }
 
-    if (*scrolled >= map_distance) {
+    if (is_end_of_map(*scrolled)) {
         return false;
     }
 
@@ -28,4 +26,13 @@ bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled) {
     scroll_bkg(x_mod, y_mod);
 
     return true;
+}
+
+// if the player has reached the end of the map, return true
+bool is_end_of_map(UINT16 scrolled) {
+    if (scrolled >= MAP_DISTANCE) {
+        return true;
+    }
+
+    return false;
 }
