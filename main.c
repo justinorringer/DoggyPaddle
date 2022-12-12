@@ -141,14 +141,20 @@ void check_input() {
 	UINT8 temp_y = player.y + y_mod;
 
 	UINT16 time = sys_time;
-	// obstacle boundaries
+
 	if (player_collision_with_enemies(temp_x, temp_y, player_size, enemies, enemy_count)) {
 		player_hit(time);
-		return;
+
+		// quick fix, need to calculate the actual collision 
+		// (so the player doesn't get stuck in the enemy).
+		// we would want the player to move in the opposite direction to collision
+		temp_x = temp_x - x_mod;
+
+		// return
 	}
 
 	// screen boundaries
-	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
+	if (player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
 	{
 		if (is_grace_period_over(BS_FRAMES, time, game_state.sys_time_bs)) {
 			play_sound(boundary_hit);
@@ -181,6 +187,12 @@ void check_input() {
 	}
     else {
 		move_large(&player, temp_x, temp_y);
+	}
+
+	for (UINT8 i = 0; i < enemy_count; i++) {
+		Enemy *enemy = &enemies[i];
+		if (has_spawned(enemy) == 0){ continue; }
+		move_enemy_preset(enemy);
 	}
 }
 
