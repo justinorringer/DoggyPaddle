@@ -26,7 +26,7 @@ void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
 }
 
 // This function is based on the movement_type field
-void move_enemy_preset(Enemy *enemy) {
+void move_enemy_preset(Enemy *enemy, UINT8 off_frame) {
     if (enemy->active == 0) {
         return;
     }
@@ -40,32 +40,48 @@ void move_enemy_preset(Enemy *enemy) {
         x = enemy->small.x;
         y = enemy->small.y;
     }
+
     switch (enemy->movement_type) {
-        case 0: // No movement
+        case LEFT_SLOW:
+            if (off_frame) {
+                x -= 1;
+            }
             break;
-        case 1: // Move left
-            move_enemy(enemy, x - 1, y);
+        case LEFT_FAST:
+            x -= 1;
             break;
-        case 2: // Move right
-            move_enemy(enemy, x + 1, y);
+        case RIGHT_SLOW:
+            if (off_frame) {
+                x += 1;
+            }
             break;
-        case 3: // Move up
-            move_enemy(enemy, x, y - 1);
+        case RIGHT_FAST:
+            x += 1;
+            break;
+        case UP_SLOW:
+            if (off_frame) {
+                y -= 1;
+            }
+            break;
+        default:
+            return;
             break;
     }
 
+    move_enemy(enemy, x, y);
+
 }
 
-void render_enemy(Enemy *enemy, UINT8 id) {
+void render_enemy(Enemy *enemy, UINT8 *id) {
     enemy->active = 1;
 
     // small
     if (enemy->sprite_size == 0) {
-        render_small(&(enemy->small), id);   
+        render_small(&(enemy->small), id[0]);   
     }
     // beeg
     else {
-        // render_large(&(enemy->large), id);
+        render_large(&(enemy->large), id);
     }
 }
 

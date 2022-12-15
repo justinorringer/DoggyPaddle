@@ -6,6 +6,7 @@
 #include "../maps/map.h"
 #include "../tiles/pool.h"
 #include "../tiles/ocean.h"
+#include "../data/data.h"
 
 #define OPENING_LEVEL (UINT8)0
 #define POOL_LEVEL (UINT8)1
@@ -43,4 +44,18 @@ bool checkLevelChange(UINT8 *level, UINT16 *scrolled) {
         return true;
     }
     return false;
+}
+
+
+void get_level_data(UINT8 level, EnemyData **enemy_data, UINT8 *enemy_data_count) {
+    switch (level) {
+        case POOL_LEVEL:
+            *enemy_data_count = POOL_ENEMY_DATA_COUNT;
+            *enemy_data = pool_enemy_data;
+            break;
+        case OCEAN_LEVEL:
+            *enemy_data_count = OCEAN_ENEMY_DATA_COUNT;
+            *enemy_data = ocean_enemy_data;
+            break;
+    }
 }

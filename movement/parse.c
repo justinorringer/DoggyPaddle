@@ -2,9 +2,16 @@
 #include <stdlib.h>
 
 #include "movement.h"
+#include "../data/data.h"
+#include "../internal/internal.h"
 
 // Reads in the data for enemies and obstacles
-Enemy* read_enemy(EnemyData *data, UINT8 enemy_data_count, UINT8 *enemy_num) {
+Enemy* read_enemy(UINT8 level, UINT8 *enemy_num) {
+    EnemyData *data;
+    UINT8 enemy_data_count;
+    
+    get_level_data(level, &data, &enemy_data_count);
+
     Enemy* enemies = calloc(enemy_data_count, sizeof(Enemy));
     
     for (UINT8 i = 0; i < enemy_data_count; i++) {

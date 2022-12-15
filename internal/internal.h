@@ -1,6 +1,8 @@
 #include <gb/gb.h>
 #include <stdbool.h>
 
+#include "../data/data.h"
+
 // consts
 #define I_FRAMES (UINT8)60 // invincibility frames
 #define BS_FRAMES (UINT8)30 // boundary sound frames
@@ -16,6 +18,7 @@
 // game state
 typedef struct {
     bool    game_over;
+    bool    off_frame; // using it for slow moving objects
     UINT16  sys_time_i;
     UINT16  sys_time_bs;
     UINT8   joypad;
@@ -27,6 +30,7 @@ typedef struct {
 // levels
 extern void changeLevel(UINT8 level);
 extern bool checkLevelChange(UINT8 *level, UINT16 *scrolled);
+extern void get_level_data(UINT8 level, EnemyData **enemy_data, UINT8 *enemy_data_count);
 
 // scrolling
 extern bool scroll(UINT8 player_x, UINT16 x_mod, UINT8 y_mod, UINT16 *scrolled);

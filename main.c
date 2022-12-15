@@ -9,7 +9,7 @@
 #include "maps/map.h"
 #include "maps/text.h"
 
-#include "data/pool_data.h"
+#include "data/data.h"
 
 #include "sounds/sounds.h"
 #include "movement/movement.h"
@@ -62,6 +62,7 @@ void main() {
 
 void init() {
 	game_state.game_over = false;
+	game_state.off_frame = false;
 	game_state.sys_time_i = UINT16_MAX - I_FRAMES;
 	game_state.sys_time_bs = UINT16_MAX - BS_FRAMES;
 	game_state.scrolled = 0;
@@ -71,22 +72,22 @@ void init() {
 
 	changeLevel(POOL_LEVEL);
 
-	set_sprite_data(0, 12, spriteTiles);
+	set_sprite_data(0, 20, spriteTiles);
     init_large(&player, dog_id, 16, 16);
 	render_large(&player, dog_id);
 
 	// dog bowls
 	Small s; // no need to save the bowls in an array
-	init_small(&s, 0x09, 48, 144);
+	init_small(&s, 0x09, 20, 144);
 	render_small(&s, bowl_id[0]);
 	
-	init_small(&s, 0x09, 48+10, 144);
+	init_small(&s, 0x09, 20+10, 144);
 	render_small(&s, bowl_id[1]);
 	
-	init_small(&s, 0x09, 48+20, 144);
+	init_small(&s, 0x09, 20+20, 144);
 	render_small(&s, bowl_id[2]);
 	
-	enemies = read_enemy(enemy_data, ENEMY_DATA_COUNT, &enemy_count);
+	enemies = read_enemy(game_state.level, &enemy_count);
 
 	init_sound();
 	init_hp();
@@ -134,7 +135,11 @@ void check_input() {
 	// RIGHT
 	if (game_state.joypad & J_RIGHT) {
 		x_mod++;
-		
+	}
+
+	// on the off_frame, put some gravity on the player
+	if (game_state.off_frame) {
+		y_mod++;
 	}
 
 	UINT8 temp_x = player.x + x_mod;
@@ -143,6 +148,7 @@ void check_input() {
 	UINT16 time = sys_time;
 
 	if (player_collision_with_enemies(temp_x, temp_y, player_size, enemies, enemy_count)) {
+		play_sound(boundary_hit);
 		player_hit(time);
 
 		// quick fix, need to calculate the actual collision 
@@ -192,7 +198,7 @@ void check_input() {
 	for (UINT8 i = 0; i < enemy_count; i++) {
 		Enemy *enemy = &enemies[i];
 		if (has_spawned(enemy) == 0){ continue; }
-		move_enemy_preset(enemy);
+		move_enemy_preset(enemy, game_state.off_frame);
 	}
 }
 
@@ -208,6 +214,8 @@ void player_hit(UINT16 time){
 }
 
 void check_game_state(){
+	game_state.off_frame = !game_state.off_frame;
+
 	if (is_player_dead()) {
 		game_state.game_over = true;
 		play_sound(death);
@@ -231,26 +239,35 @@ void check_game_state(){
 	}
 
 	if (checkLevelChange(&(game_state.level), &(game_state.scrolled))) {
+		enemies = read_enemy(game_state.level, &enemy_count);
 		delay(1000);
 	}
 }
 
 void spawn_enemies(){
+	UINT8 id_extra = 0;
 	for (UINT8 i = 0; i < enemy_count; i++){
 		Enemy *enemy = &enemies[i];
 
 		if (has_spawned(enemy) == 1){ continue; }
 
 		UINT16 enemy_x;
+		UINT8 id[4] = { 0, 0, 0, 0 };
 		if (enemy->sprite_size == 0) {
 			enemy_x = enemy->small.x;
+			id[0] = 7 + i + id_extra;
 		}
 		else{
 			enemy_x = enemy->large.x;
+			id[0] = 7 + i + id_extra;
+			id[1] = 7 + i + 1 + id_extra;
+			id[2] = 7 + i + 2 + id_extra;
+			id[3] = 7 + i + 3 + id_extra;
+			id_extra += 3;
 		}
 
 		if (game_state.scrolled + 160 >= enemy_x) {
-			render_enemy(enemy, 7+i);
+			render_enemy(enemy, id);
 			// render_enemy(enemy, get_next_enemy_id(enemy, &next_enemy_id));
 		}
 	}

@@ -75,6 +75,12 @@ typedef struct EnemyData EnemyData;
 
 #endif
 
+#define LEFT_SLOW 1
+#define LEFT_FAST 2
+#define RIGHT_SLOW 3
+#define RIGHT_FAST 4
+#define UP_SLOW 5
+
 #ifndef ENEMY_HEADER_GUARD
 #define ENEMY_HEADER_GUARD
 
@@ -89,8 +95,8 @@ typedef struct Enemy{
 
 extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type);
 extern void move_enemy(Enemy *enemy, UINT16 x, UINT8 y);
-extern void move_enemy_preset(Enemy *enemy);
-extern void render_enemy(Enemy *enemy, UINT8 id);
+extern void move_enemy_preset(Enemy *enemy, UINT8 off_frame);
+extern void render_enemy(Enemy *enemy, UINT8 *id);
 extern void hide_enemy(Enemy *enemy);
 extern UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id);
 extern UINT8 is_active(Enemy *enemy);
