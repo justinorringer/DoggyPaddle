@@ -7,9 +7,14 @@
 #include "tiles/text.h"
 #include "maps/map.h"
 #include "maps/text.h"
+
+#include "data/pool_data.h"
+
 #include "sounds/sounds.h"
 #include "movement/movement.h"
+#include "movement/parse.h"
 #include "internal/internal.h"
+
 
 void init();
 void check_input();
@@ -18,12 +23,14 @@ void check_game_state();
 void restart_game();
 void player_hit(UINT16 time);
 
-Large player;
 GameState game_state;
+Large player;
+Enemy enemy[4];
+UINT8 enemy_count;
+Obstacle *obstacle;
+UINT8 obstacle_count;
 
-// TODO: we can probably move these into GameState? or some default config struct
-UINT8 level_left = 30 * 8 - 160;
-UINT8 scrolled = 0;
+UINT8 bowl_ids[] = {4, 5, 6};
 
 void main() {
 
@@ -45,19 +52,26 @@ void init() {
 	game_state.game_over = false;
 	game_state.sys_time_i = UINT16_MAX - I_FRAMES;
 	game_state.sys_time_bs = UINT16_MAX - BS_FRAMES;
-	
+	game_state.pixels_scrolled = 0;
+	game_state.tiles_scrolled = 0;
+
 	DISPLAY_ON;
 
-	set_bkg_data(0, 11, oceanTiles);
-	set_bkg_tiles(0, 0, mapWidth, mapHeight, map); 
+	changeLevel(POOL_LEVEL);
 
-	set_sprite_data(0, 13, spriteTiles);
-	UINT8 sprite_ids[] = {0, 1, 2, 3};
-    init_large(&player, sprite_ids, 16, 16, 16, 16);
+	set_sprite_data(0, 12, spriteTiles);
+	UINT8 id[] = {0, 1, 2, 3};
+	UINT8 sprite_id[] = {0, 1, 2, 3};
+    init_large(&player, id, sprite_id, 16, 16);
+
 	// dog bowls
-	init_small(0x09, 48, 144);
-	init_small(0x0B, 48+10, 144);
-	init_small(0x0C, 48+20, 144);
+	Small s; // no need to save the bowls in an array
+	init_small(&s, 0x09, bowl_ids[0], 48, 144);
+	init_small(&s, 0x09, bowl_ids[1], 48+10, 144);
+	init_small(&s, 0x09, bowl_ids[2], 48+20, 144);
+
+	// parse enemy data
+	read_enemy(&enemy, enemy_data, enemy_data_count, &enemy_count, bowl_ids[2]);
 
 	init_sound();
 	init_hp();
@@ -115,24 +129,24 @@ void check_input() {
 	UINT8 temp_y = player.y + y_mod;
 
 	// push the pool boundary
-	UINT8 pool_boundary = 32;
-	if (scrolled > pool_boundary) {
-		pool_boundary = 0;
-	}
-	else {
-		pool_boundary = pool_boundary - scrolled;
-	}
+	// UINT8 pool_boundary = 32;
+	// if (scrolled > pool_boundary) {
+	// 	pool_boundary = 0;
+	// }
+	// else {
+	// 	pool_boundary = pool_boundary - scrolled;
+	// }
 
 	UINT16 time = sys_time;
 	// obstacle boundaries
-	if (
-		// left wall (pool boundary)
-		collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
-	)
-	{
-		player_hit(time);
-		return;
-	}
+	// if (
+	// 	// left wall (pool boundary)
+	// 	collision_check(temp_x, temp_y, player_size, player_size, 0, 48, pool_boundary, 144)
+	// )
+	// {
+	// 	player_hit(time);
+	// 	return;
+	// }
 
 	// screen boundaries
 	if(	player_collision_with_screen(temp_x, temp_y, player_size, tile_size))
@@ -145,7 +159,7 @@ void check_input() {
 	}
 	
 
-	if (scroll(player.x + x_mod, x_mod, 0, &level_left, &scrolled) == true) {
+	if (scroll(player.x + x_mod, x_mod, 0, &game_state.pixels_scrolled, &game_state.tiles_scrolled) == true) {
 		move_large(&player, temp_x - x_mod, temp_y);
 	}
     else {
@@ -155,12 +169,10 @@ void check_input() {
 
 // check if invincibility frames ran out, and take damage if yes
 void player_hit(UINT16 time){
-	UINT8 bowls[3] = {0x09, 0x0B, 0x0C};
-
 	if (is_grace_period_over(I_FRAMES, time, game_state.sys_time_i)) {
 		// invinibility ran out, player takes damage
 		dec_hp();
-		hide_sprite(bowls[get_hp()]);
+		hide_sprite(bowl_ids[get_hp()]);
 		play_sound(boundary_hit);
 		game_state.sys_time_i = time;
 	}
