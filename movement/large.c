@@ -1,15 +1,7 @@
 #include <gb/gb.h>
+#include "movement.h"
 
 // This will be used for bosses and the character
-struct Large {
-    UBYTE id[4];
-    UINT16 x;
-    UINT8 y;
-    UINT8 width;
-    UINT8 height;
-};
-
-typedef struct Large Large;
 
 // x and y are in tiles
 void move_large(Large *large, UINT16 x, UINT8 y) {
@@ -23,20 +15,36 @@ void move_large(Large *large, UINT16 x, UINT8 y) {
 }
 
 // Initializes the large entity
-void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y) {
-    large->id[0] = id[0];
-    large->id[1] = id[1];
-    large->id[2] = id[2];
-    large->id[3] = id[3];
+void init_large(Large *large, UBYTE *sprite_id, UINT16 x, UINT8 y) {
+    large->sprite_id[0] = sprite_id[0];
+    large->sprite_id[1] = sprite_id[1];
+    large->sprite_id[2] = sprite_id[2];
+    large->sprite_id[3] = sprite_id[3];
     large->x = x;
     large->y = y;
     large->width = 16;
     large->height = 16;
+}
 
-    set_sprite_tile(large->id[0], sprite_id[0]);
-    set_sprite_tile(large->id[1], sprite_id[1]);
-    set_sprite_tile(large->id[2], sprite_id[2]);
-    set_sprite_tile(large->id[3], sprite_id[3]);
+void render_large(Large *large, UBYTE *id) {
+    large->id[0] = id[0];
+    large->id[1] = id[1];
+    large->id[2] = id[2];
+    large->id[3] = id[3];
+
+    set_sprite_tile(large->id[0], large->sprite_id[0]);
+    set_sprite_tile(large->id[1], large->sprite_id[1]);
+    set_sprite_tile(large->id[2], large->sprite_id[2]);
+    set_sprite_tile(large->id[3], large->sprite_id[3]);
 
     move_large(large, large->x, large->y);
+}
+
+void hide_large(Large *large) {
+    move_large(large, 0, 0);
+    
+    hide_sprite(large->id[0]);
+    hide_sprite(large->id[1]);
+    hide_sprite(large->id[2]);
+    hide_sprite(large->id[3]);
 }

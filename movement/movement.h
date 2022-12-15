@@ -24,14 +24,17 @@ extern void move_obstacle(Obstacle *obstacle, UINT16 x, UINT8 y);
 // large
 typedef struct {
     UBYTE id[4];
+    UBYTE sprite_id[4];
     UINT16 x;
     UINT8 y;
     UINT8 width;
     UINT8 height;
 } Large;
 
-extern void init_large(Large *large, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y);
+extern void init_large(Large *large, UBYTE *sprite_id, UINT16 x, UINT8 y);
 extern void move_large(Large *large, UINT16 x, UINT8 y);
+extern void render_large(Large *large, UBYTE *id);
+extern void hide_large(Large *large);
 
 #endif
 
@@ -41,6 +44,7 @@ extern void move_large(Large *large, UINT16 x, UINT8 y);
 // small
 typedef struct {
     UBYTE id;
+    UBYTE sprite_id;
     UINT16 x;
     UINT8 y;
     UINT8 width;
@@ -49,16 +53,39 @@ typedef struct {
 
 // sprite_id is the id in the sprite sheet
 // id is the identifier for the tile
-extern void init_small(Small *small, UINT8 id, UINT8 sprite_id, UINT16 x, UINT8 y);
+extern void init_small(Small *small, UINT8 sprite_id, UINT16 x, UINT8 y);
 extern void move_small(Small *small, UINT16 x, UINT8 y);
+extern void render_small(Small *small, UINT8 id);
+extern void hide_small(Small *small);
 
 #endif
+
+#ifndef DATA
+#define DATA
+
+struct EnemyData {
+    UBYTE sprite_id[4];
+    UINT16 x; // in tiles so it doesn't overflow
+    UINT8 y; // in tiles so it doesn't overflow
+    UINT8 sprite_size;
+    UINT8 movement_type;
+};
+
+typedef struct EnemyData EnemyData;
+
+#endif
+
+#define LEFT_SLOW 1
+#define LEFT_FAST 2
+#define RIGHT_SLOW 3
+#define RIGHT_FAST 4
+#define UP_SLOW 5
 
 #ifndef ENEMY_HEADER_GUARD
 #define ENEMY_HEADER_GUARD
 
 // enemy
-typedef struct {
+typedef struct Enemy{
     UINT8 sprite_size;
     Large large;
     Small small;
@@ -66,9 +93,15 @@ typedef struct {
     UINT8 movement_type;
 } Enemy;
 
-extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type);
+extern void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type);
 extern void move_enemy(Enemy *enemy, UINT16 x, UINT8 y);
-extern void move_enemy_preset(Enemy *enemy);
+extern void move_enemy_preset(Enemy *enemy, UINT8 off_frame);
+extern void render_enemy(Enemy *enemy, UINT8 *id);
+extern void hide_enemy(Enemy *enemy);
+extern UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id);
+extern UINT8 is_active(Enemy *enemy);
+extern UINT8 is_dead(Enemy *enemy);
+extern UINT8 has_spawned(Enemy *enemy);
 
 #endif
 

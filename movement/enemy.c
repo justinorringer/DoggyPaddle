@@ -2,26 +2,22 @@
 
 #include "movement.h"
 
-struct Enemy {
-    UINT8 sprite_size;
-    Large large;
-    Small small;
-    UINT8 active;
-    UINT8 movement_type;
-};
-
-void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
+void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
     enemy->sprite_size = sprite_size;
     if (sprite_size == 1) { // Large
-        init_large(&enemy->large, id, sprite_id, x, y);
+        init_large(&enemy->large, sprite_id, x, y);
     } else {
-        init_small(&enemy->small, id[0], sprite_id[0], x, y);
+        init_small(&(enemy->small), sprite_id[0], x, y);
     }
 
     enemy->movement_type = movement_type;
 }
 
 void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
+    if (enemy->active == 0) {
+        return;
+    }
+
     if (enemy->sprite_size == 1) { // Large
         move_large(&enemy->large, x, y);
     } else {
@@ -30,7 +26,11 @@ void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
 }
 
 // This function is based on the movement_type field
-void move_enemy_preset(Enemy *enemy) {
+void move_enemy_preset(Enemy *enemy, UINT8 off_frame) {
+    if (enemy->active == 0) {
+        return;
+    }
+    
     UINT16 x;
     UINT8 y;
     if (enemy->sprite_size == 1) { // Large
@@ -40,18 +40,102 @@ void move_enemy_preset(Enemy *enemy) {
         x = enemy->small.x;
         y = enemy->small.y;
     }
+
     switch (enemy->movement_type) {
-        case 0: // No movement
+        case LEFT_SLOW:
+            if (off_frame) {
+                x -= 1;
+            }
             break;
-        case 1: // Move left
-            move_enemy(enemy, x - 1, y);
+        case LEFT_FAST:
+            x -= 1;
             break;
-        case 2: // Move right
-            move_enemy(enemy, x + 1, y);
+        case RIGHT_SLOW:
+            if (off_frame) {
+                x += 1;
+            }
             break;
-        case 3: // Move up
-            move_enemy(enemy, x, y - 1);
+        case RIGHT_FAST:
+            x += 1;
+            break;
+        case UP_SLOW:
+            if (off_frame) {
+                y -= 1;
+            }
+            break;
+        default:
+            return;
             break;
     }
 
+    move_enemy(enemy, x, y);
+
+}
+
+void render_enemy(Enemy *enemy, UINT8 *id) {
+    enemy->active = 1;
+
+    // small
+    if (enemy->sprite_size == 0) {
+        render_small(&(enemy->small), id[0]);   
+    }
+    // beeg
+    else {
+        render_large(&(enemy->large), id);
+    }
+}
+
+void hide_enemy(Enemy *enemy) {
+    enemy->active = 0;
+
+    // small
+    if (enemy->sprite_size == 0) {
+        hide_small(&(enemy->small));
+    }
+    // beeg
+    else {
+        hide_large(&(enemy->large));
+    }
+}
+
+UINT8* get_next_enemy_id(Enemy *enemy, UINT8 *current_id) {
+    UINT8 res[4];
+    // small
+    if (enemy->sprite_size == 0) {
+        *current_id = *current_id + 1;
+        res[0] = *current_id;
+        return res;
+    }
+    // beeg
+    else {
+        UINT8 id = *current_id;
+        *current_id = *current_id + 4;
+        res[0]=id;
+        res[1]=id+1;
+        res[2]=id+2;
+        res[3]=id+3;
+        
+        return res;
+    }
+}
+
+UINT8 is_active(Enemy *enemy) {
+    if (enemy->active == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+UINT8 has_spawned(Enemy *enemy) {
+    if (enemy->active == 1 || enemy->active == 2) {
+        return 1;
+    }
+    return 0;
+}
+
+UINT8 is_dead(Enemy *enemy) {
+    if (enemy->active == 2) {
+        return 1;
+    }
+    return 0;
 }
