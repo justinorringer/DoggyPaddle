@@ -10,7 +10,7 @@ struct Enemy {
     UINT8 movement_type;
 };
 
-void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT8 x, UINT8 y, UINT8 movement_type) {
+void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UINT16 x, UINT8 y, UINT8 movement_type) {
     enemy->sprite_size = sprite_size;
     if (sprite_size == 1) { // Large
         init_large(&enemy->large, id, sprite_id, x, y);
@@ -21,7 +21,7 @@ void init_enemy(Enemy *enemy, UINT8 sprite_size, UBYTE *id, UBYTE *sprite_id, UI
     enemy->movement_type = movement_type;
 }
 
-void move_enemy(Enemy *enemy, UINT8 x, UINT8 y) {
+void move_enemy(Enemy *enemy, UINT16 x, UINT8 y) {
     if (enemy->sprite_size == 1) { // Large
         move_large(&enemy->large, x, y);
     } else {
@@ -31,7 +31,7 @@ void move_enemy(Enemy *enemy, UINT8 x, UINT8 y) {
 
 // This function is based on the movement_type field
 void move_enemy_preset(Enemy *enemy) {
-    UINT8 x;
+    UINT16 x;
     UINT8 y;
     if (enemy->sprite_size == 1) { // Large
         x = enemy->large.x;

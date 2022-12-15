@@ -2,7 +2,7 @@
 
 struct Obstacle {
     UINT8 id;
-    UINT8 x;
+    UINT16 x;
     UINT8 y;
     UINT8 width;
     UINT8 height;
@@ -10,7 +10,7 @@ struct Obstacle {
 
 typedef struct Obstacle Obstacle;
 
-void init_obstacle(Obstacle *obstacle, UINT8 id, UINT8 x, UINT8 y, UINT8 width, UINT8 height) {
+void init_obstacle(Obstacle *obstacle, UINT8 id, UINT16 x, UINT8 y, UINT8 width, UINT8 height) {
     obstacle->id = id;
     obstacle->x = x;
     obstacle->y = y;
@@ -18,7 +18,7 @@ void init_obstacle(Obstacle *obstacle, UINT8 id, UINT8 x, UINT8 y, UINT8 width, 
     obstacle->height = height;
 }
 
-void move_obstacle(Obstacle *obstacle, UINT8 x, UINT8 y) {
+void move_obstacle(Obstacle *obstacle, UINT16 x, UINT8 y) {
     obstacle->x = x;
     obstacle->y = y;
 }

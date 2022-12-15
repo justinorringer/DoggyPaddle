@@ -2,7 +2,7 @@
 
 struct EnemyData {
     UBYTE sprite_id[4];
-    UINT8 x; // in tiles so it doesn't overflow
+    UINT16 x; // in tiles so it doesn't overflow
     UINT8 y; // in tiles so it doesn't overflow
     UINT8 sprite_size;
     UINT8 movement_type;
