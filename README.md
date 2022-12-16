@@ -1,6 +1,8 @@
 # DoggyPaddle
 Side-scrolling Gameboy Shooter
 
+[Trello](https://trello.com/b/Z3gkgyFD/doggypaddle)
+
 ## How to play
 1. Install a gb emulator
     + We used BGB: https://bgb.bircd.org/#downloads and run it with wine on fedora: https://wiki.winehq.org/Download
